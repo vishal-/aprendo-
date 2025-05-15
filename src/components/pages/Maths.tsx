@@ -1,7 +1,7 @@
 import React from "react";
 
 const Maths: React.FC = () => {
-  return <div>Maths</div>;
+  return <div>Mathematics</div>;
 };
 
 export default Maths;
