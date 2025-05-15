@@ -4,7 +4,7 @@ import Maths from "./pages/Maths";
 
 const Container: React.FC = () => {
   return (
-    <div>
+    <div className="container">
       <HashRouter>
         <Routes>
           <Route path="/maths" element={<Maths />} />
