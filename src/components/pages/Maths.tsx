@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MathOperation } from "../constants/math.enum";
+import Button from "../atoms/Button";
 
 const Maths: React.FC = () => {
-  const [started, setStarted] = useState<Boolean>(false);
+  const [started, setStarted] = useState<boolean>(false);
   const [operation, setOperation] = useState<string>(MathOperation.Addition);
-  const [tpq, setTpq] = useState<Number>(Infinity);
+  const [tpq, setTpq] = useState<number>(Infinity);
 
   const time = Array.from({ length: 20 }, (_, k) => (k ? 5 * k : 1));
 
@@ -40,7 +41,7 @@ const Maths: React.FC = () => {
           </div>
 
           <div>
-            <button className="btn btn-sm btn-primary">Start</button>
+            <Button label="Start" onClick={() => setStarted(true)} />
           </div>
         </div>
       )}
