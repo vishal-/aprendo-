@@ -25,9 +25,11 @@ const MathSetup: React.FC<MathSetupProps> = ({
           value={operation}
           onChange={(e) => setParams({ ...params, operation: e.target.value })}
         >
-          {Object.keys(MathOperation).map((o) => {
-            return <option value={MathOperation[o]}>{o}</option>;
-          })}
+          {Object.keys(MathOperation).map((o) => (
+            <option key={MathOperation[o]} value={MathOperation[o]}>
+              {o}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -41,7 +43,9 @@ const MathSetup: React.FC<MathSetupProps> = ({
         >
           <option value={Infinity}>{Infinity}</option>
           {time.map((t) => (
-            <option value={t}>{t}</option>
+            <option key={`time_limit_${t}`} value={t}>
+              {t}
+            </option>
           ))}
         </select>
       </div>

@@ -16,7 +16,7 @@ const PrevNext: React.FC<PrevNextProps> = ({
 }) => {
   return (
     <div className="d-flex justify-content-between my-1 mx-1">
-      {showPrevious && (
+      {(showPrevious && (
         <button
           className="btn btn-sm btn-outline-dark border-0"
           onClick={onPrevious}
@@ -24,7 +24,7 @@ const PrevNext: React.FC<PrevNextProps> = ({
           <FaChevronLeft />
           <span>&#160;&#160;&#160;Previous</span>
         </button>
-      )}
+      )) || <span>&#160;</span>}
 
       {showNext && (
         <button
