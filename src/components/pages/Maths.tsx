@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MathOperation } from "../constants/math.enum";
 import MathSetup from "../molecules/MathSetup";
 import MathAssess from "../molecules/MathAssess";
+import "../../assets/styles/math.scss";
 
 const Maths: React.FC = () => {
   const [started, setStarted] = useState<boolean>(false);
