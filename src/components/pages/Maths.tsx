@@ -1,20 +1,28 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { MathOperation } from "../constants/math.enum";
 import MathSetup from "../molecules/MathSetup";
 import MathAssess from "../molecules/MathAssess";
 import "../../assets/styles/math.scss";
+import type { MSetup } from "../constants/math.interfaces";
+
+const defaultParams = {
+  operation: MathOperation.Addition,
+  timeLimit: 1
+};
 
 const Maths: React.FC = () => {
   const [started, setStarted] = useState<boolean>(false);
-  const [params, setParams] = useState({
-    operation: MathOperation.Addition,
-    timeLimit: 5
-  });
+  const [params, setParams] = useState<MSetup>({ ...defaultParams });
+
+  const onReset = useCallback(() => {
+    setStarted(false);
+    setParams({ ...defaultParams });
+  }, []);
 
   return (
     <div>
       {started ? (
-        <MathAssess params={params} />
+        <MathAssess params={params} onReset={onReset} />
       ) : (
         <MathSetup
           params={params}
