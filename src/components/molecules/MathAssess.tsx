@@ -6,6 +6,7 @@ import { useTimer } from "react-timer-hook";
 import Button from "../atoms/Button";
 import timeupImg from "../../../public/images/time_up.png";
 import { ChallengeState } from "../constants/math.enum";
+import Operator from "../atoms/Operator";
 
 interface MathAssessProps {
   params: MSetup;
@@ -17,8 +18,6 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
   const [problemIndex, setIndex] = useState<number>(-1);
   const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problems, setProblems] = useState<MProblem[]>([]);
-  // const [timeUp, setTimeUp] = useState<boolean>(false);
-  // const [finished, setFinished] = useState<boolean>(false);
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 60 * timeLimit);
@@ -31,16 +30,16 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
 
   useEffect(() => {
     if (problems.length === 0) {
-      setProblems([getProblem()]);
+      setProblems([getProblem(params.operation)]);
       setIndex(0);
       timer.start();
       setCurrentState(ChallengeState.Running);
     }
-  }, [problems.length, timer]);
+  }, [params.operation, problems.length, timer]);
 
   const onNext = () => {
     if (problems[problemIndex + 1] === undefined) {
-      setProblems([...problems, getProblem()]);
+      setProblems([...problems, getProblem(params.operation)]);
     }
 
     setIndex(problemIndex + 1);
@@ -48,7 +47,18 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
 
   const onPrevious = () => setIndex(problemIndex - 1);
 
-  const onFinish = () => setCurrentState(ChallengeState.Finished);
+  const onFinish = () => {
+    if (timer.isRunning) timer.pause();
+    setCurrentState(ChallengeState.Finished);
+  };
+
+  const selectAnswer = (index: number, answer: number) => {
+    const temp = [...problems];
+
+    temp[index] = { ...problems[index], answer };
+
+    setProblems(temp);
+  };
 
   return (
     <div className="math-board">
@@ -66,11 +76,30 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
 
           <div className="row my-3">
             <div className="text-center h5">Problem #{problemIndex + 1}</div>
-            <div className="col-4 offset-3 my-3 text-end h3">
-              <div> {problems[problemIndex].operand1}</div>
-              <div>+ {problems[problemIndex].operand2}</div>
+            <div className="col-6 offset-2 my-3 text-end h3">
+              <div className="ls-1"> {problems[problemIndex].operand1}</div>
+              <div className="ls-1">
+                <Operator operation={params.operation} />
+                {problems[problemIndex].operand2}
+              </div>
               <hr />
               <hr />
+            </div>
+
+            <div className="text-center">
+              {problems[problemIndex].options.map((option: number) => (
+                <button
+                  key={`option_${problemIndex}_${option}`}
+                  className={`btn ${
+                    option === problems[problemIndex].answer
+                      ? "btn-secondary"
+                      : "btn-outline-secondary"
+                  } mx-2 my-2`}
+                  onClick={() => selectAnswer(problemIndex, option)}
+                >
+                  {option.toString()}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -108,6 +137,7 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
               <div>
                 {p.operand1} + {p.operand2} = {p.solution}
               </div>
+              <div>Your answer: {p.answer}</div>
             </div>
           ))}
 
