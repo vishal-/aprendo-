@@ -1,54 +1,70 @@
-# React + TypeScript + Vite
+# Aprendo - Educational Practice App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aprendo is an interactive web application designed to help children practice and improve their skills in mathematics and other subjects. The app provides a fun and engaging way for kids to learn through timed challenges and exercises.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Math Practice**: Addition, subtraction, multiplication, and division exercises
+- **Timed Challenges**: Customizable time limits for practice sessions
+- **Progress Tracking**: Monitor improvement over time
+- **Kid-friendly Interface**: Simple and intuitive design for young learners
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/yourusername/aprendo-.git
+   cd aprendo-
+   ```
+
+2. Install dependencies
+
+   ```
+   npm install
+   ```
+
+3. Start the development server
+
+   ```
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+## Building for Production
+
+```
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Technology Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- React 19
+- TypeScript
+- Vite
+- SASS for styling
+- React Router for navigation
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Project Structure
+
+- `/src/components/atoms` - Basic UI components
+- `/src/components/molecules` - Composite components
+- `/src/components/pages` - Page components
+- `/src/components/utils` - Utility functions
+- `/src/components/constants` - Enums and interfaces
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
