@@ -1,48 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { MathOperation } from "../constants/math.enum";
+import MathSetup from "../molecules/MathSetup";
+import MathAssess from "../molecules/MathAssess";
+import "../../assets/styles/math.scss";
+import type { MSetup } from "../constants/math.interfaces";
+
+const defaultParams = {
+  operation: MathOperation.Addition,
+  timeLimit: 1
+};
 
 const Maths: React.FC = () => {
-  const [started, setStarted] = useState<Boolean>(false);
-  const [operation, setOperation] = useState<string>(MathOperation.Addition);
-  const [tpq, setTpq] = useState<Number>(Infinity);
+  const [started, setStarted] = useState<boolean>(false);
+  const [params, setParams] = useState<MSetup>({ ...defaultParams });
 
-  const time = Array.from({ length: 20 }, (_, k) => (k ? 5 * k : 1));
+  const onReset = useCallback(() => {
+    setStarted(false);
+    setParams({ ...defaultParams });
+  }, []);
 
   return (
     <div>
       {started ? (
-        <div>test</div>
+        <MathAssess params={params} onReset={onReset} />
       ) : (
-        <div>
-          <div>
-            Choose your adventure:
-            <select
-              value={operation}
-              onChange={(e) => setOperation(e.target.value)}
-            >
-              {Object.keys(MathOperation).map((o) => {
-                return <option value={MathOperation[o]}>{o}</option>;
-              })}
-            </select>
-          </div>
-
-          <div>
-            Time limit (in minutes):
-            <select
-              value={tpq.toString()}
-              onChange={(e) => setTpq(parseInt(e.target.value))}
-            >
-              <option value={Infinity}>{Infinity}</option>
-              {time.map((t) => (
-                <option value={t}>{t}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <button className="btn btn-sm btn-primary">Start</button>
-          </div>
-        </div>
+        <MathSetup
+          params={params}
+          setParams={setParams}
+          setStarted={setStarted}
+        />
       )}
     </div>
   );
