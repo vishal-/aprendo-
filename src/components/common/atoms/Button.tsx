@@ -1,6 +1,6 @@
 import React from "react";
-import msgTone from "../../assets/ca_tone.wav";
-import { ButtonVariant } from "../constants/elements.enum";
+import msgTone from "../../../assets/sounds/ca_tone.wav";
+import { ButtonVariant } from "../../constants/elements.enum";
 
 interface ButtonProps {
   variant?: string;

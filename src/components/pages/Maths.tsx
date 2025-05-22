@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
-import { MathOperation } from "../constants/math.enum";
-import MathSetup from "../molecules/MathSetup";
-import MathAssess from "../molecules/MathAssess";
+import { MathOperation } from "../maths/constants/math.enum";
+import MathSetup from "../maths/templates/MathSetup";
+import MathAssess from "../maths/templates/MathAssess";
 import "../../assets/styles/math.scss";
-import type { MSetup } from "../constants/math.interfaces";
+import type { MSetup } from "../maths/constants/math.interfaces";
 
 const defaultParams = {
   operation: MathOperation.Addition,
