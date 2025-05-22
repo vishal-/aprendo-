@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import type { MProblem, MSetup } from "../constants/math.interfaces";
 import { getProblem } from "../../utils/math.utils";
 import { useTimer } from "react-timer-hook";
-import { ChallengeState } from "../constants/math.enum";
 import MathHeader from "../organisms/MathHeader";
 import MathProblemCard from "../organisms/MathProblemCard";
 import MathFooter from "../organisms/MathFooter";
 import MathTimeUp from "../organisms/MathTimeUp";
 import MathResult from "../organisms/MathResult";
+import { ChallengeState } from "../../common/constants/app.enums";
 
 interface MathAssessProps {
   params: MSetup;

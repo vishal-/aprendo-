@@ -4,10 +4,3 @@ export const MathOperation: Record<string, string> = {
   Multiplication: "Multiply",
   Division: "Divide"
 };
-
-export const ChallengeState = {
-  Stopped: "stopped",
-  Running: "running",
-  TimeUp: "timeup",
-  Finished: "finished"
-};
