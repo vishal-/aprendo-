@@ -1,5 +1,5 @@
-import { MathOperation } from "../constants/math.enum";
-import type { MProblem } from "../constants/math.interfaces";
+import { MathOperation } from "../maths/constants/math.enum";
+import type { MProblem } from "../maths/constants/math.interfaces";
 
 export const getRandom = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;

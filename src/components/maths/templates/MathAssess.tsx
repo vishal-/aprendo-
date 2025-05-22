@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import type { MProblem, MSetup } from "../constants/math.interfaces";
-import { getProblem } from "../utils/math.utils";
-import PrevNext from "../atoms/PrevNext";
+import { getProblem } from "../../utils/math.utils";
+import PrevNext from "../../common/atoms/PrevNext";
 import { useTimer } from "react-timer-hook";
-import Button from "../atoms/Button";
-import timeupImg from "../../../public/images/time_up.png";
+import Button from "../../common/atoms/Button";
+import timeupImg from "../../../../public/images/time_up.png";
 import { ChallengeState } from "../constants/math.enum";
 import Operator from "../atoms/Operator";
 

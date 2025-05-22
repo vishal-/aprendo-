@@ -1,6 +1,6 @@
 import React from "react";
 import { MathOperation } from "../constants/math.enum";
-import Button from "../atoms/Button";
+import Button from "../../common/atoms/Button";
 import type { MSetup } from "../constants/math.interfaces";
 
 interface MathSetupProps {
