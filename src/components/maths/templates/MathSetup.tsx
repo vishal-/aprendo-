@@ -1,7 +1,7 @@
-import React from "react";
-import { MathOperation } from "../constants/math.enum";
 import Button from "../../common/atoms/Button";
 import type { MSetup } from "../constants/math.interfaces";
+import { MathOperation } from "../constants/math.enum";
+import Select from "../../common/atoms/Select";
 
 interface MathSetupProps {
   params: MSetup;
@@ -14,43 +14,68 @@ const MathSetup: React.FC<MathSetupProps> = ({
   setParams,
   setStarted
 }) => {
-  const time = Array.from({ length: 20 }, (_, k) => (k ? 5 * k : 1));
-  const { operation, timeLimit } = params;
+  const { operation, timeLimit, size } = params;
+
+  const operationOptions = Object.keys(MathOperation).map((o) => ({
+    optionLabel: o,
+    optionValue: MathOperation[o]
+  }));
+
+  const timeLimitOptions = Array.from({ length: 20 }, (_, i) => {
+    const optionValue = `${i ? i * 5 : 1}`;
+
+    return {
+      optionLabel: optionValue,
+      optionValue
+    };
+  });
+
+  const operandSizeOptions = Array.from({ length: 9 }, (_, i) => {
+    const optionValue = `${i + 1}`;
+
+    return {
+      optionLabel: `${optionValue} digit`,
+      optionValue
+    };
+  });
 
   return (
     <div>
-      <div>
-        Choose your adventure:
-        <select
+      <div className="my-3">
+        <Select
+          id="select-operation"
+          label="Choose your adventure:"
+          options={operationOptions}
           value={operation}
-          onChange={(e) => setParams({ ...params, operation: e.target.value })}
-        >
-          {Object.keys(MathOperation).map((o) => (
-            <option key={MathOperation[o]} value={MathOperation[o]}>
-              {o}
-            </option>
-          ))}
-        </select>
+          onChange={(value) => setParams({ ...params, operation: value })}
+        />
       </div>
 
-      <div>
-        Time limit (in minutes):
-        <select
+      <div className="my3">
+        <Select
+          id="select-time-limit"
+          label="Time limit (in minutes):"
+          options={timeLimitOptions}
           value={timeLimit.toString()}
-          onChange={(e) =>
-            setParams({ ...params, timeLimit: parseInt(e.target.value) })
+          onChange={(value) =>
+            setParams({ ...params, timeLimit: parseInt(value, 10) })
           }
-        >
-          <option value={Infinity}>{Infinity}</option>
-          {time.map((t) => (
-            <option key={`time_limit_${t}`} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
-      <div>
+      <div className="my-3">
+        <Select
+          id="select-operand-size"
+          label="Operand size"
+          options={operandSizeOptions}
+          value={size.toString()}
+          onChange={(value) =>
+            setParams({ ...params, size: parseInt(value, 10) })
+          }
+        />
+      </div>
+
+      <div className="text-center mt-3">
         <Button label="Start" onClick={() => setStarted(true)} />
       </div>
     </div>

@@ -4,6 +4,9 @@ import type { MProblem } from "../maths/constants/math.interfaces";
 export const getRandom = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+export const calculatePercentage = (n: number, m: number): number =>
+  Math.round((n / m) * 10000) / 100;
+
 export const createListOfRandomNumbers = (
   n: number,
   size: number = 4,
