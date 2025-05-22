@@ -22,11 +22,11 @@ const MathSetup: React.FC<MathSetupProps> = ({
   }));
 
   const timeLimitOptions = Array.from({ length: 20 }, (_, i) => {
-    const optionLabel = `${i ? 5 * i : 1}`;
+    const optionValue = `${i ? i * 5 : 1}`;
 
     return {
-      optionLabel,
-      optionValue: optionLabel
+      optionLabel: optionValue,
+      optionValue
     };
   });
 
