@@ -1,6 +1,7 @@
 export interface MSetup {
   operation: string;
   timeLimit: number;
+  size: number;
 }
 
 export interface MProblem {

@@ -7,7 +7,8 @@ import type { MSetup } from "../maths/constants/math.interfaces";
 
 const defaultParams = {
   operation: MathOperation.Addition,
-  timeLimit: 1
+  timeLimit: 1,
+  size: 3
 };
 
 const Maths: React.FC = () => {

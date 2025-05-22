@@ -15,7 +15,8 @@ interface MathAssessProps {
 }
 
 const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
-  const { timeLimit } = params;
+  const { operation, size, timeLimit } = params;
+
   const [problemIndex, setIndex] = useState<number>(-1);
   const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problems, setProblems] = useState<MProblem[]>([]);
@@ -31,16 +32,16 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
 
   useEffect(() => {
     if (problems.length === 0) {
-      setProblems([getProblem(params.operation)]);
+      setProblems([getProblem(operation, size)]);
       setIndex(0);
       timer.start();
       setCurrentState(ChallengeState.Running);
     }
-  }, [params.operation, problems.length, timer]);
+  }, [operation, problems.length, size, timer]);
 
   const onNext = () => {
     if (problems[problemIndex + 1] === undefined) {
-      setProblems([...problems, getProblem(params.operation)]);
+      setProblems([...problems, getProblem(operation, size)]);
     }
 
     setIndex(problemIndex + 1);
@@ -78,7 +79,11 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
       )}
 
       {currentState === ChallengeState.Finished && (
-        <MathResult problems={problems} onReset={onReset} />
+        <MathResult
+          problems={problems}
+          operation={operation}
+          onReset={onReset}
+        />
       )}
     </div>
   );

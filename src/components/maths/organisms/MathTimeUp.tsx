@@ -1,5 +1,5 @@
 import Button from "../../common/atoms/Button";
-import timeupImg from "../../../../public/images/time_up.png";
+import timeupImg from "../../../assets/images/time_up.png";
 
 const MathTimeUp: React.FC<{ onFinish: () => void }> = ({ onFinish }) => {
   return (
