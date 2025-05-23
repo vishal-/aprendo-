@@ -11,10 +11,9 @@ import { ChallengeState } from "../../common/constants/app.enums";
 
 interface MathAssessProps {
   params: MSetup;
-  onReset: () => void;
 }
 
-const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
+const MathAssess: React.FC<MathAssessProps> = ({ params }) => {
   const { operation, size, timeLimit } = params;
 
   const [problemIndex, setIndex] = useState<number>(-1);
@@ -79,11 +78,7 @@ const MathAssess: React.FC<MathAssessProps> = ({ params, onReset }) => {
       )}
 
       {currentState === ChallengeState.Finished && (
-        <MathResult
-          problems={problems}
-          operation={operation}
-          onReset={onReset}
-        />
+        <MathResult problems={problems} operation={operation} />
       )}
     </div>
   );

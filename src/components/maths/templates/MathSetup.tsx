@@ -2,6 +2,7 @@ import Button from "../../common/atoms/Button";
 import type { MSetup } from "../constants/math.interfaces";
 import { MathOperation } from "../constants/math.enum";
 import Select from "../../common/atoms/Select";
+import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
 interface MathSetupProps {
   params: MSetup;
@@ -78,6 +79,8 @@ const MathSetup: React.FC<MathSetupProps> = ({
       <div className="text-center mt-3">
         <Button label="Start" onClick={() => setStarted(true)} />
       </div>
+
+      <MainMenuBtn />
     </div>
   );
 };

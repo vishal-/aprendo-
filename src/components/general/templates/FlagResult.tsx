@@ -1,18 +1,17 @@
+import type { FlagListType, FProblem } from "../constants/general.interfaces";
 import { useMemo } from "react";
-import Operator from "../atoms/Operator";
-import type { MProblem } from "../constants/math.interfaces";
 import { calculatePercentage } from "../../utils/math.utils";
-import { FaPercent } from "react-icons/fa";
+import { FaPercent } from "react-icons/fa6";
 import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
-interface MathResultProps {
-  problems: MProblem[];
-  operation: string;
+interface FlagResultProps {
+  problems: FProblem[];
+  flagList: FlagListType;
 }
 
-const MathResult: React.FC<MathResultProps> = ({ problems, operation }) => {
+const FlagResult: React.FC<FlagResultProps> = ({ problems, flagList }) => {
   const correctAnswers = useMemo(() => {
-    return problems.filter(({ answer, solution }) => answer === solution);
+    return problems.filter(({ country, answer }) => country === answer);
   }, [problems]);
 
   return (
@@ -23,25 +22,27 @@ const MathResult: React.FC<MathResultProps> = ({ problems, operation }) => {
         <thead>
           <tr className="table-primary">
             <th>#</th>
-            <th>Problem</th>
-            <th>Solution</th>
+            <th>Flag</th>
+            <th>Country</th>
             <th>Your answer</th>
             <th>&#160;</th>
           </tr>
         </thead>
         <tbody>
-          {problems.map(({ operand1, operand2, answer, solution }, i) => (
+          {problems.map(({ country, answer }, i) => (
             <tr
-              key={`result_${operand1}_${operand2}_${answer}`}
-              className={solution === answer ? "table-success" : "table-danger"}
+              key={`result_${country}_${answer}`}
+              className={country === answer ? "table-success" : "table-danger"}
             >
               <td>{i + 1}</td>
-              <td>
-                {operand1}
-                <Operator operation={operation} />
-                {operand2}
+              <td style={{ width: "6rem" }}>
+                <img
+                  src={`https://c8t3.c10.e2-5.dev/flags/thumbs/${flagList[country].thumbnail}`}
+                  className="img-fluid"
+                  alt={flagList[country].thumbnail}
+                />
               </td>
-              <td className="text-center">{solution}</td>
+              <td className="text-center">{country}</td>
               <td className="text-center h6">{answer}</td>
               <td>&#160;</td>
             </tr>
@@ -80,4 +81,4 @@ const MathResult: React.FC<MathResultProps> = ({ problems, operation }) => {
   );
 };
 
-export default MathResult;
+export default FlagResult;
