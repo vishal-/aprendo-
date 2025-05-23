@@ -3,18 +3,14 @@ import Operator from "../atoms/Operator";
 import type { MProblem } from "../constants/math.interfaces";
 import { calculatePercentage } from "../../utils/math.utils";
 import { FaPercent } from "react-icons/fa";
+import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
 interface MathResultProps {
   problems: MProblem[];
-  onReset: () => void;
   operation: string;
 }
 
-const MathResult: React.FC<MathResultProps> = ({
-  problems,
-  onReset,
-  operation
-}) => {
+const MathResult: React.FC<MathResultProps> = ({ problems, operation }) => {
   const correctAnswers = useMemo(() => {
     return problems.filter(({ answer, solution }) => answer === solution);
   }, [problems]);
@@ -79,11 +75,7 @@ const MathResult: React.FC<MathResultProps> = ({
         </li>
       </ul>
 
-      <div className="text-center">
-        <button className="btn btn-dark" onClick={onReset}>
-          End task
-        </button>
-      </div>
+      <MainMenuBtn />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { MathOperation } from "../maths/constants/math.enum";
 import MathSetup from "../maths/templates/MathSetup";
 import MathAssess from "../maths/templates/MathAssess";
@@ -15,15 +15,10 @@ const Maths: React.FC = () => {
   const [started, setStarted] = useState<boolean>(false);
   const [params, setParams] = useState<MSetup>({ ...defaultParams });
 
-  const onReset = useCallback(() => {
-    setStarted(false);
-    setParams({ ...defaultParams });
-  }, []);
-
   return (
     <div>
       {started ? (
-        <MathAssess params={params} onReset={onReset} />
+        <MathAssess params={params} />
       ) : (
         <MathSetup
           params={params}

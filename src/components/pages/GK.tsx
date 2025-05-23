@@ -1,15 +1,23 @@
 import { useState } from "react";
 import FlagAssess from "../general/templates/FlagAssess";
+import MainMenuBtn from "../common/atoms/MainMenuBtn";
 
 const GK: React.FC = () => {
   const [topic, setTopic] = useState<string>();
 
   return (
-    <div>
+    <div className="text-center my-3">
       {topic === undefined && (
-        <button className="btn btn-primary" onClick={() => setTopic("flags")}>
-          Flags
-        </button>
+        <>
+          <button
+            className="btn btn-outline-dark kalnia-glaze"
+            onClick={() => setTopic("flags")}
+          >
+            Flags
+          </button>
+
+          <MainMenuBtn />
+        </>
       )}
 
       {topic === "flags" && <FlagAssess />}

@@ -31,7 +31,7 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
       <div className="text-center mt-3">
         <h3>Flag #{problemIndex + 1}</h3>
 
-        <div className="text-center mb-3">
+        <div className="text-center mb-3 px-3">
           <img
             src={`https://c8t3.c10.e2-5.dev/flags/imgs/${flag.image}`}
             className="img-fluid"

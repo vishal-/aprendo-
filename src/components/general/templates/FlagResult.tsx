@@ -1,9 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import type { FlagListType, FProblem } from "../constants/general.interfaces";
-import { HashRoutes } from "../../config";
 import { useMemo } from "react";
 import { calculatePercentage } from "../../utils/math.utils";
 import { FaPercent } from "react-icons/fa6";
+import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
 interface FlagResultProps {
   problems: FProblem[];
@@ -11,13 +10,9 @@ interface FlagResultProps {
 }
 
 const FlagResult: React.FC<FlagResultProps> = ({ problems, flagList }) => {
-  const navigate = useNavigate();
-
   const correctAnswers = useMemo(() => {
     return problems.filter(({ country, answer }) => country === answer);
   }, [problems]);
-
-  const onReset = () => navigate(HashRoutes.Home);
 
   return (
     <div>
@@ -81,11 +76,7 @@ const FlagResult: React.FC<FlagResultProps> = ({ problems, flagList }) => {
         </li>
       </ul>
 
-      <div className="text-center">
-        <button className="btn btn-dark" onClick={onReset}>
-          End task
-        </button>
-      </div>
+      <MainMenuBtn />
     </div>
   );
 };

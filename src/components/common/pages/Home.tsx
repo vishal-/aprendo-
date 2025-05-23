@@ -1,26 +1,40 @@
 import { useNavigate } from "react-router-dom";
 import { HashRoutes } from "../../config";
+import MathImg from "../../../assets/images/math_logo.jpg";
+import GkImg from "../../../assets/images/general_knowledge.webp";
 
 const NavBtn = ({
   clickHandler,
+  imageSource,
   label
 }: {
   clickHandler: () => void;
+  imageSource: string;
   label: string;
 }) => (
-  <button className="btn btn-info mx-3 my-3" onClick={clickHandler}>
-    {label}
-  </button>
+  <div className="my-3 px-3 cursor-pointer" onClick={clickHandler}>
+    <img src={imageSource} alt={label} className="img-fluid" />
+  </div>
 );
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <NavBtn clickHandler={() => navigate(HashRoutes.Maths)} label="Maths" />
+    <div className="text-center">
+      <h3 className="my-3">Select one</h3>
 
-      <NavBtn clickHandler={() => navigate(HashRoutes.General)} label="G.K" />
+      <NavBtn
+        clickHandler={() => navigate(HashRoutes.Maths)}
+        label="Maths"
+        imageSource={MathImg}
+      />
+
+      <NavBtn
+        clickHandler={() => navigate(HashRoutes.General)}
+        label="G.K"
+        imageSource={GkImg}
+      />
     </div>
   );
 };
