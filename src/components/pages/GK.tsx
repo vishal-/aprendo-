@@ -7,7 +7,7 @@ const GK: React.FC = () => {
   return (
     <div>
       {topic === undefined && (
-        <button className="btn" onClick={() => setTopic("flags")}>
+        <button className="btn btn-primary" onClick={() => setTopic("flags")}>
           Flags
         </button>
       )}
