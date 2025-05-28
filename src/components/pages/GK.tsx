@@ -1,6 +1,5 @@
 import { useState } from "react";
 import FlagAssess from "../general/templates/FlagAssess";
-import MainMenuBtn from "../common/atoms/MainMenuBtn";
 
 const GK: React.FC = () => {
   const [topic, setTopic] = useState<string>();
@@ -15,8 +14,6 @@ const GK: React.FC = () => {
           >
             Flags
           </button>
-
-          <MainMenuBtn />
         </>
       )}
 

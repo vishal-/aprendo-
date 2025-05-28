@@ -11,3 +11,15 @@ export interface HeaderContextType {
   headerParams: HeaderContextParamsType;
   setHeaderParams: (params: HeaderContextParamsType) => void;
 }
+
+export interface FooterContextParamsType {
+  showFooter: boolean;
+  onPrevious?: () => void;
+  onNext?: () => void;
+  onFinish?: () => void;
+}
+
+export interface FooterContextType {
+  footerParams: FooterContextParamsType;
+  setFooterParams: (params: FooterContextParamsType) => void;
+}

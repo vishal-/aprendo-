@@ -7,20 +7,26 @@ import { HashRoutes } from "./config";
 import { HeaderProvider } from "../context/HeaderContext";
 import Home from "./common/pages/Home";
 import Header from "./common/organisms/Header";
+import Footer from "./common/organisms/Footer";
+import { FooterProvider } from "../context/FooterContext";
 
 const Container: React.FC = () => {
   return (
     <div className="app-container">
       <HashRouter>
         <HeaderProvider>
-          <Header />
+          <FooterProvider>
+            <Header />
 
-          <Routes>
-            <Route path={HashRoutes.General} element={<GK />} />
-            <Route path={HashRoutes.Maths} element={<Maths />} />
-            {/* <Route path="/" element={<Navigate replace to="/maths" />} /> */}
-            <Route path="/" element={<Home />} />
-          </Routes>
+            <Routes>
+              <Route path={HashRoutes.General} element={<GK />} />
+              <Route path={HashRoutes.Maths} element={<Maths />} />
+              {/* <Route path="/" element={<Navigate replace to="/maths" />} /> */}
+              <Route path="/" element={<Home />} />
+            </Routes>
+
+            <Footer />
+          </FooterProvider>
         </HeaderProvider>
       </HashRouter>
     </div>

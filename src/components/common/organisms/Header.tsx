@@ -27,8 +27,8 @@ const Header: React.FC = () => {
         <div className="col-7 h3 text-center">{title}</div>
 
         {timer.isRunning && (
-          <div className="col-3 text-center">
-            <div>Time left</div>
+          <div className="col-2 text-center">
+            <div>Timer</div>
             <div className="d-flex justify-content-center">
               <div className="me-1">
                 <span className="badge text-bg-dark">
@@ -38,7 +38,11 @@ const Header: React.FC = () => {
               </div>
               :
               <div className="ms-1">
-                <span className="badge text-bg-dark">
+                <span
+                  className={`badge ${
+                    timer.totalSeconds < 11 ? "text-bg-danger" : "text-bg-dark"
+                  }`}
+                >
                   {timer.seconds.toString().padStart(2, "0")}
                 </span>
                 <div>sec</div>

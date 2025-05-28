@@ -1,6 +1,4 @@
 import { useMemo } from "react";
-import Button from "../../common/atoms/Button";
-import PrevNext from "../../common/atoms/PrevNext";
 import type { FlagListType, FProblem } from "../constants/general.interfaces";
 
 interface FlagProblemCardProps {
@@ -17,9 +15,6 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
   problems,
   problemIndex,
   flagList,
-  onNext,
-  onPrevious,
-  onFinish,
   setAnswer
 }) => {
   const [problem, flag] = useMemo(() => {
@@ -39,9 +34,9 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
           />
         </div>
 
-        <div className="my-3">
+        <div className="my-3 p-3 d-flex flex-wrap justify-content-center">
           {problem.options.map((option) => (
-            <div key={`flag_option_${option}`} className="my-3">
+            <div key={`flag_option_${option}`} className="m-3">
               <button
                 className={`btn ${
                   problem.answer === option
@@ -56,7 +51,7 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
           ))}
         </div>
       </div>
-      <div className="position-absolute bottom-0 mb-3 p-0 w-100">
+      {/* <div className="position-absolute bottom-0 mb-3 p-0 w-100">
         <PrevNext
           onPrevious={onPrevious}
           onNext={onNext}
@@ -65,7 +60,7 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
         <div className="mt-3 text-center">
           <Button label="FINISH" onClick={onFinish} />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
