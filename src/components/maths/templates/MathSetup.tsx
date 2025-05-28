@@ -2,7 +2,6 @@ import Button from "../../common/atoms/Button";
 import type { MSetup } from "../constants/math.interfaces";
 import { MathOperation } from "../constants/math.enum";
 import Select from "../../common/atoms/Select";
-import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
 interface MathSetupProps {
   params: MSetup;
@@ -41,46 +40,38 @@ const MathSetup: React.FC<MathSetupProps> = ({
   });
 
   return (
-    <div>
-      <div className="my-3">
-        <Select
-          id="select-operation"
-          label="Choose your adventure:"
-          options={operationOptions}
-          value={operation}
-          onChange={(value) => setParams({ ...params, operation: value })}
-        />
-      </div>
+    <div className="p-3">
+      <Select
+        id="select-operation"
+        label="Choose your adventure:"
+        options={operationOptions}
+        value={operation}
+        onChange={(value) => setParams({ ...params, operation: value })}
+      />
 
-      <div className="my3">
-        <Select
-          id="select-time-limit"
-          label="Time limit (in minutes):"
-          options={timeLimitOptions}
-          value={timeLimit.toString()}
-          onChange={(value) =>
-            setParams({ ...params, timeLimit: parseInt(value, 10) })
-          }
-        />
-      </div>
+      <Select
+        id="select-time-limit"
+        label="Time limit (in minutes):"
+        options={timeLimitOptions}
+        value={timeLimit.toString()}
+        onChange={(value) =>
+          setParams({ ...params, timeLimit: parseInt(value, 10) })
+        }
+      />
 
-      <div className="my-3">
-        <Select
-          id="select-operand-size"
-          label="Operand size"
-          options={operandSizeOptions}
-          value={size.toString()}
-          onChange={(value) =>
-            setParams({ ...params, size: parseInt(value, 10) })
-          }
-        />
-      </div>
+      <Select
+        id="select-operand-size"
+        label="Operand size"
+        options={operandSizeOptions}
+        value={size.toString()}
+        onChange={(value) =>
+          setParams({ ...params, size: parseInt(value, 10) })
+        }
+      />
 
       <div className="text-center mt-3">
         <Button label="Start" onClick={() => setStarted(true)} />
       </div>
-
-      <MainMenuBtn />
     </div>
   );
 };

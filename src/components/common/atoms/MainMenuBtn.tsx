@@ -1,17 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { HashRoutes } from "../../config";
-import { FaHome } from "react-icons/fa";
+import { useHeader } from "../../../context/HeaderContext";
 
 const MainMenuBtn = () => {
   const navigate = useNavigate();
+  const { setShowHome } = useHeader();
+
+  const gotoHome = () => {
+    setShowHome(true);
+    navigate(HashRoutes.Home);
+  };
 
   return (
-    <div className="text-center position-absolute bottom-0 mb-3 p-0 w-100">
-      <button
-        className="btn btn-dark w-75"
-        onClick={() => navigate(HashRoutes.Home)}
-      >
-        <FaHome />
+    <div className="text-center my-3">
+      <button className="btn btn-dark btn-primary" onClick={gotoHome}>
+        End task
       </button>
     </div>
   );

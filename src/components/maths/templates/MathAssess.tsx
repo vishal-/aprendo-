@@ -8,6 +8,7 @@ import MathFooter from "../organisms/MathFooter";
 import MathTimeUp from "../organisms/MathTimeUp";
 import MathResult from "../organisms/MathResult";
 import { ChallengeState } from "../../common/constants/app.enums";
+import { useHeader } from "../../../context/HeaderContext";
 
 interface MathAssessProps {
   params: MSetup;
@@ -19,6 +20,7 @@ const MathAssess: React.FC<MathAssessProps> = ({ params }) => {
   const [problemIndex, setIndex] = useState<number>(-1);
   const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problems, setProblems] = useState<MProblem[]>([]);
+  const { setHeaderParams, headerParams } = useHeader();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 60 * timeLimit);
@@ -34,9 +36,10 @@ const MathAssess: React.FC<MathAssessProps> = ({ params }) => {
       setProblems([getProblem(operation, size)]);
       setIndex(0);
       timer.start();
+      setHeaderParams({ ...headerParams, showHome: false });
       setCurrentState(ChallengeState.Running);
     }
-  }, [operation, problems.length, size, timer]);
+  }, [headerParams, operation, problems.length, setHeaderParams, size, timer]);
 
   const onNext = () => {
     if (problems[problemIndex + 1] === undefined) {

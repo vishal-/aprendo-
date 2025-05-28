@@ -14,7 +14,7 @@ const Select: React.FC<SelectProps> = ({
   options
 }) => {
   return (
-    <div className="mx-x my-2">
+    <div className="mb-4">
       <label className="form-label" htmlFor={id}>
         {label}
       </label>
