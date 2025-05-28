@@ -10,8 +10,8 @@ import { useHeader } from "../../../context/HeaderContext";
 
 const MathAssess: React.FC<{ params: MSetup }> = ({ params }) => {
   const { operation, size, timeLimit } = params;
-  const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
 
+  const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problemIndex, setIndex] = useState<number>(-1);
   const [problems, setProblems] = useState<MProblem[]>([]);
 
@@ -22,41 +22,51 @@ const MathAssess: React.FC<{ params: MSetup }> = ({ params }) => {
     setCurrentState(ChallengeState.Finished);
   }, [timer]);
 
+  // Initialize assessment
   useEffect(() => {
-    if (problems.length === 0 && !timer.isRunning) {
+    if (currentState === ChallengeState.Stopped) {
+      // Create first problem
       setProblems([getProblem(operation, size)]);
       setIndex(0);
 
+      // Set up timer
       const time = new Date();
       time.setSeconds(time.getSeconds() + 60 * timeLimit);
-
       timer.restart(time, true);
 
+      // Update header
       setHeaderParams({
         ...headerParams,
         showHome: false,
-        onExpire: onFinish
+        onTimerExpire: () => {
+          setCurrentState(ChallengeState.TimeUp);
+          timer.pause();
+        }
       });
+
       setCurrentState(ChallengeState.Running);
     }
   }, [
+    currentState,
     headerParams,
-    onFinish,
     operation,
-    problems.length,
     setHeaderParams,
     size,
     timeLimit,
     timer
   ]);
 
-  const onNext = () => {
-    if (problems[problemIndex + 1] === undefined) {
-      setProblems([...problems, getProblem(operation, size)]);
+  const onNext = useCallback(() => {
+    if (problemIndex + 1 >= problems.length) {
+      setProblems((prev) => [...prev, getProblem(operation, size)]);
     }
 
-    setIndex(problemIndex + 1);
-  };
+    setIndex((prevIndex) => prevIndex + 1);
+  }, [problemIndex, problems.length, operation, size]);
+
+  const onPrevious = useCallback(() => {
+    setIndex((prevIndex) => Math.max(0, prevIndex - 1));
+  }, []);
 
   return (
     <div className="math-board">
@@ -72,7 +82,7 @@ const MathAssess: React.FC<{ params: MSetup }> = ({ params }) => {
           <MathFooter
             onFinish={onFinish}
             onNext={onNext}
-            onPrevious={() => setIndex(problemIndex - 1)}
+            onPrevious={onPrevious}
             problemIndex={problemIndex}
           />
         </>

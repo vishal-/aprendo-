@@ -14,6 +14,7 @@ const Container: React.FC = () => {
       <HashRouter>
         <HeaderProvider>
           <Header />
+
           <Routes>
             <Route path={HashRoutes.General} element={<GK />} />
             <Route path={HashRoutes.Maths} element={<Maths />} />

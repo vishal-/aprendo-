@@ -21,7 +21,7 @@ export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({
   const timer = useTimer({
     expiryTimestamp: new Date(),
     autoStart: false,
-    onExpire: headerParams.onExpire
+    onExpire: headerParams.onTimerExpire
   });
 
   return (

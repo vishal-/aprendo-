@@ -10,18 +10,6 @@ const Header: React.FC = () => {
 
   const navigate = useNavigate();
 
-  //   useEffect(() => {
-  //     console.log("timer is running....", timer.isRunning);
-  //     if (!timer.isRunning) {
-  //       const time = new Date();
-  //       time.setSeconds(time.getSeconds() + 60 * 2);
-
-  //       timer.restart(time);
-  //     }
-  //   }, [timer, timer.isRunning]);
-
-  console.log(timer.isRunning);
-
   return (
     <header className="bg-dark-subtle text-danger-emphasis mb-3 p-3">
       <nav className="row">
@@ -39,12 +27,23 @@ const Header: React.FC = () => {
         <div className="col-7 h3 text-center">{title}</div>
 
         {timer.isRunning && (
-          <div className="col-3">
+          <div className="col-3 text-center">
             <div>Time left</div>
-            <span className="badge mx-1 text-bg-dark">
-              {timer.totalSeconds.toString().padStart(2, "0")}
-            </span>
-            <div>seconds</div>
+            <div className="d-flex justify-content-center">
+              <div className="me-1">
+                <span className="badge text-bg-dark">
+                  {timer.minutes.toString().padStart(2, "0")}
+                </span>
+                <div>min</div>
+              </div>
+              :
+              <div className="ms-1">
+                <span className="badge text-bg-dark">
+                  {timer.seconds.toString().padStart(2, "0")}
+                </span>
+                <div>sec</div>
+              </div>
+            </div>
           </div>
         )}
       </nav>

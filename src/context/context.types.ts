@@ -3,7 +3,7 @@ import type { useTimerResultType } from "react-timer-hook/dist/types/src/useTime
 export interface HeaderContextParamsType {
   title: string;
   showHome: boolean;
-  onExpire: () => void;
+  onTimerExpire: () => void;
 }
 
 export interface HeaderContextType {
