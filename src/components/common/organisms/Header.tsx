@@ -7,6 +7,7 @@ import { useHeader } from "../../../context/HeaderContext";
 const Header: React.FC = () => {
   const { headerParams, timer } = useHeader();
   const { title, showHome } = headerParams;
+
   const navigate = useNavigate();
 
   //   useEffect(() => {
@@ -18,6 +19,8 @@ const Header: React.FC = () => {
   //       timer.restart(time);
   //     }
   //   }, [timer, timer.isRunning]);
+
+  console.log(timer.isRunning);
 
   return (
     <header className="bg-dark-subtle text-danger-emphasis mb-3 p-3">
@@ -39,7 +42,7 @@ const Header: React.FC = () => {
           <div className="col-3">
             <div>Time left</div>
             <span className="badge mx-1 text-bg-dark">
-              {timer.totalSeconds}
+              {timer.totalSeconds.toString().padStart(2, "0")}
             </span>
             <div>seconds</div>
           </div>

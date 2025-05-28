@@ -1,13 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { HashRoutes } from "../../config";
 import { useHeader } from "../../../context/HeaderContext";
+import { defaultHeaderParams } from "../../../context/context.defaults";
 
 const MainMenuBtn = () => {
   const navigate = useNavigate();
-  const { setShowHome } = useHeader();
+  const { setHeaderParams } = useHeader();
 
   const gotoHome = () => {
-    setShowHome(true);
+    setHeaderParams({ ...defaultHeaderParams });
+    // timer.pause();
     navigate(HashRoutes.Home);
   };
 

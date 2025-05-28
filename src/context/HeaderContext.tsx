@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  type ReactNode,
-  useContext
-} from "react";
+import React from "react";
 import { useTimer } from "react-timer-hook";
 import type {
   HeaderContextParamsType,
@@ -11,17 +6,23 @@ import type {
 } from "./context.types";
 import { defaultHeaderParams } from "./context.defaults";
 
-const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
+const HeaderContext = React.createContext<HeaderContextType | undefined>(
+  undefined
+);
 
-export const HeaderProvider: React.FC<{ children: ReactNode }> = ({
+export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const [headerParams, setHeaderParams] = useState<HeaderContextParamsType>({
-    ...defaultHeaderParams
+  const [headerParams, setHeaderParams] =
+    React.useState<HeaderContextParamsType>({
+      ...defaultHeaderParams
+    });
+
+  const timer = useTimer({
+    expiryTimestamp: new Date(),
+    autoStart: false,
+    onExpire: headerParams.onExpire
   });
-  // const [title, setTitle] = useState<string>("Areyyy");
-  // const [showHome, setShowHome] = useState<boolean>(true);
-  const timer = useTimer({ expiryTimestamp: new Date(), autoStart: false });
 
   return (
     <HeaderContext.Provider value={{ headerParams, setHeaderParams, timer }}>
@@ -31,7 +32,7 @@ export const HeaderProvider: React.FC<{ children: ReactNode }> = ({
 };
 
 export const useHeader = (): HeaderContextType => {
-  const context = useContext(HeaderContext);
+  const context = React.useContext(HeaderContext);
 
   if (context === undefined) {
     throw new Error("useHeader must be used within a HeaderProvider");
