@@ -1,11 +1,14 @@
-import type { FlagListType, FProblem } from "../constants/general.interfaces";
+import type {
+  FlagListType,
+  FlagProblemType
+} from "../constants/general.interfaces";
 import { useMemo } from "react";
 import { calculatePercentage } from "../../utils/math.utils";
 import { FaPercent } from "react-icons/fa6";
 import MainMenuBtn from "../../common/atoms/MainMenuBtn";
 
 interface FlagResultProps {
-  problems: FProblem[];
+  problems: FlagProblemType[];
   flagList: FlagListType;
 }
 

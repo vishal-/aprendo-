@@ -10,7 +10,7 @@ export const defaultHeaderParams: HeaderContextParamsType = {
 };
 
 export const defaultFooterParams: FooterContextParamsType = {
-  showFooter: true,
+  showFooter: false,
   onFinish: undefined,
   onPrevious: undefined,
   onNext: undefined

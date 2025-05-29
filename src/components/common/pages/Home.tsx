@@ -22,8 +22,6 @@ const Home = () => {
 
   return (
     <div className="text-center">
-      <h3 className="my-3">Select one</h3>
-
       <NavBtn
         clickHandler={() => navigate(HashRoutes.Maths)}
         label="Maths"

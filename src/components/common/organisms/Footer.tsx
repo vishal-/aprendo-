@@ -13,7 +13,9 @@ const Footer: React.FC = () => {
 
       {onFinish !== undefined && (
         <div className="d-flex justify-content-center">
-          <button className="btn btn-sm btn-danger">Finish</button>
+          <button className="btn btn-sm btn-danger" onClick={onFinish}>
+            Finish
+          </button>
         </div>
       )}
     </footer>
