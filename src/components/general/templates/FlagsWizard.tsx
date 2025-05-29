@@ -13,12 +13,14 @@ import FlagResult from "./FlagResult";
 import { preloadImage } from "../../utils/app.utils";
 import { useFooter } from "../../../context/FooterContext";
 import { defaultFooterParams } from "../../../context/context.defaults";
+import { useHeader } from "../../../context/HeaderContext";
 
 const FlagsWizard = () => {
   const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problemIndex, setProblemIndex] = useState<number>(-1);
   const [problems, setProblems] = useState<FlagProblemType[]>([]);
 
+  const { setHeaderParams, timer } = useHeader();
   const { setFooterParams } = useFooter();
 
   const addProblem = useCallback(
@@ -65,6 +67,24 @@ const FlagsWizard = () => {
       addProblem();
     }
   };
+
+  // Set header title
+  useEffect(() => {
+    if (!timer.isRunning) {
+      setHeaderParams({
+        title: "Flags",
+        showHome: true,
+        onTimerExpire: () => {
+          setCurrentState(ChallengeState.Finished);
+          timer.pause();
+        }
+      });
+
+      const time = new Date();
+      time.setSeconds(time.getSeconds() + 60 * 2);
+      timer.restart(time, true);
+    }
+  }, [setHeaderParams, timer]);
 
   // Show footer when showing the problems
   useEffect(() => {

@@ -5,11 +5,11 @@ import { defaultHeaderParams } from "../../../context/context.defaults";
 
 const MainMenuBtn = () => {
   const navigate = useNavigate();
-  const { setHeaderParams } = useHeader();
+  const { setHeaderParams, timer } = useHeader();
 
   const gotoHome = () => {
     setHeaderParams({ ...defaultHeaderParams });
-    // timer.pause();
+    timer.pause();
     navigate(HashRoutes.Home);
   };
 

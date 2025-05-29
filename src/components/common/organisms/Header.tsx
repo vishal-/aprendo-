@@ -3,28 +3,32 @@ import { FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { HashRoutes } from "../../config";
 import { useHeader } from "../../../context/HeaderContext";
+import { defaultHeaderParams } from "../../../context/context.defaults";
 
 const Header: React.FC = () => {
-  const { headerParams, timer } = useHeader();
+  const { headerParams, setHeaderParams, timer } = useHeader();
   const { title, showHome } = headerParams;
 
   const navigate = useNavigate();
+
+  const onReturnHome = () => {
+    timer.pause();
+    setHeaderParams({ ...defaultHeaderParams });
+    navigate(HashRoutes.Home);
+  };
 
   return (
     <header className="bg-dark-subtle text-danger-emphasis mb-3 p-3">
       <nav className="row">
         <div className="col-2">
           {showHome && (
-            <button
-              className="btn btn btn-dark"
-              onClick={() => navigate(HashRoutes.Home)}
-            >
+            <button className="btn btn btn-dark" onClick={onReturnHome}>
               <FaHome />
             </button>
           )}
         </div>
 
-        <div className="col-7 h3 text-center">{title}</div>
+        <div className="col-8 display-5 text-center">{title}</div>
 
         {timer.isRunning && (
           <div className="col-2 text-center">
