@@ -11,7 +11,7 @@ export const defaultHeaderParams: HeaderContextParamsType = {
 
 export const defaultFooterParams: FooterContextParamsType = {
   showFooter: true,
-  onFinish: () => undefined,
+  onFinish: undefined,
   onPrevious: undefined,
   onNext: undefined
 };

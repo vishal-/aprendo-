@@ -1,32 +1,38 @@
-import { useMemo } from "react";
-import type { FlagListType, FProblem } from "../constants/general.interfaces";
+import { useEffect, useMemo } from "react";
+import type {
+  FlagListType,
+  FlagProblemType
+} from "../constants/general.interfaces";
 
 interface FlagProblemCardProps {
-  problems: FProblem[];
+  problems: FlagProblemType[];
   problemIndex: number;
   flagList: FlagListType;
-  onNext: () => void;
-  onPrevious: () => void;
   setAnswer: (n: number, s: string) => void;
-  onFinish: () => void;
+  onLoad: (i?: number) => void;
 }
 
 const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
   problems,
   problemIndex,
   flagList,
-  setAnswer
+  setAnswer,
+  onLoad
 }) => {
   const [problem, flag] = useMemo(() => {
     return [problems[problemIndex], flagList[problems[problemIndex].country]];
   }, [flagList, problemIndex, problems]);
+
+  useEffect(() => {
+    onLoad(problemIndex);
+  }, [onLoad, problemIndex]);
 
   return (
     <>
       <div className="text-center mt-3">
         <h3>Flag #{problemIndex + 1}</h3>
 
-        <div className="text-center mb-3 px-3">
+        <div className="text-center mb-3 px-5">
           <img
             src={`https://c8t3.c10.e2-5.dev/flags/imgs/${flag.image}`}
             className="img-fluid"
@@ -51,16 +57,6 @@ const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
           ))}
         </div>
       </div>
-      {/* <div className="position-absolute bottom-0 mb-3 p-0 w-100">
-        <PrevNext
-          onPrevious={onPrevious}
-          onNext={onNext}
-          showPrevious={problemIndex > 0}
-        />
-        <div className="mt-3 text-center">
-          <Button label="FINISH" onClick={onFinish} />
-        </div>
-      </div> */}
     </>
   );
 };

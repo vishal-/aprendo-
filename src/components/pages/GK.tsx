@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FlagAssess from "../general/templates/FlagAssess";
+import FlagAssess from "../general/templates/FlagsWizard";
 
 const GK: React.FC = () => {
   const [topic, setTopic] = useState<string>();
@@ -7,14 +7,12 @@ const GK: React.FC = () => {
   return (
     <div className="text-center my-3">
       {topic === undefined && (
-        <>
-          <button
-            className="btn btn-outline-dark kalnia-glaze"
-            onClick={() => setTopic("flags")}
-          >
-            Flags
-          </button>
-        </>
+        <button
+          className="btn btn-outline-dark kalnia-glaze"
+          onClick={() => setTopic("flags")}
+        >
+          Flags
+        </button>
       )}
 
       {topic === "flags" && <FlagAssess />}

@@ -2,13 +2,14 @@ import Button from "../../common/atoms/Button";
 
 interface FlagSetupProps {
   onStart: () => void;
+  isReady: boolean;
 }
 
-const FlagSetup: React.FC<FlagSetupProps> = ({ onStart }) => (
-  <div className="my-3">
+const FlagSetup: React.FC<FlagSetupProps> = ({ onStart, isReady }) => (
+  <div className="m-3">
     <h3 className="mb-3">Identify the flags</h3>
 
-    <Button label="Start" onClick={onStart} />
+    {isReady && <Button label="Start" onClick={onStart} />}
   </div>
 );
 
