@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { ChallengeState } from "../../common/constants/app.enums";
 import FlagSetup from "../molecules/FlagSetup";
 import countries from "../../../assets/json/nations.json";
@@ -19,45 +19,49 @@ const FlagsWizard = () => {
   const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
   const [problemIndex, setProblemIndex] = useState<number>(-1);
   const [problems, setProblems] = useState<FlagProblemType[]>([]);
+  const [bufferFlag, setBufferFlag] = useState<FlagProblemType>();
 
   const { setHeaderParams, timer } = useHeader();
   const { setFooterParams } = useFooter();
 
-  const addProblem = useCallback(
-    (onAdd?: () => void) => {
-      const newProblem = getFlagProblem(
-        countries,
-        problems.map(({ country }) => country)
-      );
-
-      const src = (flags as FlagListType)[newProblem.country].image;
-
-      preloadImage(`https://c8t3.c10.e2-5.dev/flags/imgs/${src}`)
-        .then(() => {
-          setProblems((prev) => [...prev, newProblem]);
-          onAdd?.();
-        })
-        .catch(() => {
-          console.error("error while loading image");
-        });
-    },
+  const countryList = useMemo(
+    () => problems.map(({ country }) => country),
     [problems]
+  );
+
+  const addProblem = useCallback(
+    (callback?: () => void) => {
+      if (bufferFlag) {
+        setProblems((prev) => [...prev, { ...bufferFlag }]);
+        setBufferFlag(undefined);
+        callback?.();
+      }
+    },
+    [bufferFlag]
   );
 
   const setAnswer = (index: number, answer: string) => {
     const newProblems = [...problems];
-
     newProblems[index].answer = answer;
-
     setProblems(() => [...newProblems]);
   };
 
+  /**
+   *  Finish the challenge
+   *  1. Set the current state to finished
+   *  2. Pause the timer
+   */
   const onFinish = useCallback(() => {
     setCurrentState(ChallengeState.Finished);
     timer.pause();
   }, [timer]);
 
-  const onNext = useCallback(
+  /**
+   *  Go to the next problem
+   *  1. If there are no more problems, add a new problem
+   *  2. If there are more problems, go to the next problem
+   */
+  const onNext = useMemo(
     () =>
       problems[problemIndex + 1] === undefined
         ? () => addProblem(() => setProblemIndex(problemIndex + 1))
@@ -65,47 +69,71 @@ const FlagsWizard = () => {
     [addProblem, problemIndex, problems]
   );
 
-  const onPrevious = useCallback(
+  /**
+   *  Go to the previous problem
+   */
+  const onPrevious = useMemo(
     () =>
       problemIndex > 0 ? () => setProblemIndex(problemIndex - 1) : undefined,
     [problemIndex]
   );
 
-  const onLoad = () => {
-    if (problems[problemIndex + 1] === undefined) {
-      addProblem();
-    }
-  };
+  /**
+   *  Start the challenge
+   */
+  const onStart = useMemo(
+    () =>
+      bufferFlag === undefined
+        ? undefined
+        : () => {
+            addProblem();
+            setCurrentState(ChallengeState.Running);
+            setProblemIndex(problemIndex + 1);
 
-  const onStart = () => {
-    if (problems[problemIndex + 1] !== undefined) {
-      setProblemIndex(problemIndex + 1);
-      setCurrentState(ChallengeState.Running);
-      const time = getTimeByMinutes();
-      timer.restart(time, true);
-    }
-  };
+            const time = getTimeByMinutes();
+            timer.restart(time, true);
+          },
+    [addProblem, bufferFlag, problemIndex, timer]
+  );
 
-  // On initial component load - set header title
+  /**
+   *  When the component loads, preload an image and add a new
+   *  problem to the buffer
+   */
   useEffect(() => {
-    if (
-      countries.length > 1 &&
-      Object.keys(flags).length > 1 &&
-      problems.length === 0
-    ) {
-      addProblem(() => {
-        setCurrentState(ChallengeState.Ready);
-        setHeaderParams({
-          showHome: false,
-          title: "Flags",
-          onTimerExpire: onFinish
+    if (bufferFlag === undefined) {
+      const newProblem = getFlagProblem(countries, countryList);
+      const src = (flags as FlagListType)[newProblem.country].image;
+
+      preloadImage(`https://c8t3.c10.e2-5.dev/flags/imgs/${src}`)
+        .then(() => {
+          setBufferFlag({ ...newProblem });
+
+          if (currentState === ChallengeState.Stopped) {
+            setCurrentState(ChallengeState.Ready);
+          }
+        })
+        .catch(() => {
+          console.error("error while loading image");
         });
-      });
     }
+  }, [bufferFlag, countryList, currentState]);
+
+  /**
+   *  When the component loads, set the header params
+   */
+  useEffect(() => {
+    setHeaderParams({
+      showHome: false,
+      title: "Flags",
+      onTimerExpire: onFinish
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Show footer when showing the problems
+  /**
+   * Updated footer params
+   */
   useEffect(() => {
     if (currentState === ChallengeState.Running) {
       setFooterParams({
@@ -123,15 +151,11 @@ const FlagsWizard = () => {
     <div>
       {(currentState === ChallengeState.Stopped ||
         currentState === ChallengeState.Ready) && (
-        <FlagSetup
-          onStart={onStart}
-          isReady={currentState === ChallengeState.Ready}
-        />
+        <FlagSetup onStart={onStart} />
       )}
 
       {currentState === ChallengeState.Running && (
         <FlagProblemCard
-          onLoad={onLoad}
           setAnswer={setAnswer}
           problems={problems}
           problemIndex={problemIndex}

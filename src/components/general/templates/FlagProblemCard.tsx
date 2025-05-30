@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type {
   FlagListType,
   FlagProblemType
@@ -9,23 +9,17 @@ interface FlagProblemCardProps {
   problemIndex: number;
   flagList: FlagListType;
   setAnswer: (n: number, s: string) => void;
-  onLoad: (i?: number) => void;
 }
 
 const FlagProblemCard: React.FC<FlagProblemCardProps> = ({
   problems,
   problemIndex,
   flagList,
-  setAnswer,
-  onLoad
+  setAnswer
 }) => {
   const [problem, flag] = useMemo(() => {
     return [problems[problemIndex], flagList[problems[problemIndex].country]];
   }, [flagList, problemIndex, problems]);
-
-  useEffect(() => {
-    onLoad(problemIndex);
-  }, [onLoad, problemIndex]);
 
   return (
     <>

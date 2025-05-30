@@ -1,16 +1,29 @@
+import { FaChevronLeft } from "react-icons/fa";
+
 interface StartCancelProps {
-  onStart: () => void;
-  onCancel: () => void;
+  onStart?: () => void;
+  onCancel?: () => void;
 }
 
 const StartCancel: React.FC<StartCancelProps> = ({ onStart, onCancel }) => {
   return (
     <div className="d-flex justify-content-center">
-      <button className="btn btn-primary mx-3" onClick={onStart}>
-        Start
+      <button
+        className="btn btn-danger"
+        disabled={onCancel === undefined}
+        onClick={onCancel}
+      >
+        <FaChevronLeft /> Back
       </button>
-      <button className="btn btn-danger mx-3" onClick={onCancel}>
-        Cancel
+
+      <div className="mx-3">&#160;</div>
+
+      <button
+        className="btn btn-primary"
+        disabled={onStart === undefined}
+        onClick={onStart}
+      >
+        Start
       </button>
     </div>
   );
