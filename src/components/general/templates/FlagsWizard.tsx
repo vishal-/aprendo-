@@ -10,7 +10,7 @@ import type {
 import { getFlagProblem } from "../functions/flag.functions";
 import FlagProblemCard from "./FlagProblemCard";
 import FlagResult from "./FlagResult";
-import { preloadImage } from "../../utils/app.utils";
+import { getTimeByMinutes, preloadImage } from "../../utils/app.utils";
 import { useFooter } from "../../../context/FooterContext";
 import { defaultFooterParams } from "../../../context/context.defaults";
 import { useHeader } from "../../../context/HeaderContext";
@@ -44,16 +44,6 @@ const FlagsWizard = () => {
     [problems]
   );
 
-  if (
-    countries.length > 1 &&
-    Object.keys(flags).length > 1 &&
-    problems.length === 0
-  ) {
-    addProblem(() => {
-      setCurrentState(ChallengeState.Ready);
-    });
-  }
-
   const setAnswer = (index: number, answer: string) => {
     const newProblems = [...problems];
 
@@ -62,54 +52,72 @@ const FlagsWizard = () => {
     setProblems(() => [...newProblems]);
   };
 
+  const onFinish = useCallback(() => {
+    setCurrentState(ChallengeState.Finished);
+    timer.pause();
+  }, [timer]);
+
+  const onNext = useCallback(
+    () =>
+      problems[problemIndex + 1] === undefined
+        ? () => addProblem(() => setProblemIndex(problemIndex + 1))
+        : () => setProblemIndex(problemIndex + 1),
+    [addProblem, problemIndex, problems]
+  );
+
+  const onPrevious = useCallback(
+    () =>
+      problemIndex > 0 ? () => setProblemIndex(problemIndex - 1) : undefined,
+    [problemIndex]
+  );
+
   const onLoad = () => {
     if (problems[problemIndex + 1] === undefined) {
       addProblem();
     }
   };
 
-  // Set header title
-  useEffect(() => {
-    if (!timer.isRunning) {
-      setHeaderParams({
-        title: "Flags",
-        showHome: true,
-        onTimerExpire: () => {
-          setCurrentState(ChallengeState.Finished);
-          timer.pause();
-        }
-      });
-
-      const time = new Date();
-      time.setSeconds(time.getSeconds() + 60 * 2);
+  const onStart = () => {
+    if (problems[problemIndex + 1] !== undefined) {
+      setProblemIndex(problemIndex + 1);
+      setCurrentState(ChallengeState.Running);
+      const time = getTimeByMinutes();
       timer.restart(time, true);
     }
-  }, [setHeaderParams, timer]);
+  };
+
+  // On initial component load - set header title
+  useEffect(() => {
+    if (
+      countries.length > 1 &&
+      Object.keys(flags).length > 1 &&
+      problems.length === 0
+    ) {
+      addProblem(() => {
+        setCurrentState(ChallengeState.Ready);
+        setHeaderParams({
+          showHome: false,
+          title: "Flags",
+          onTimerExpire: onFinish
+        });
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Show footer when showing the problems
   useEffect(() => {
     if (currentState === ChallengeState.Running) {
       setFooterParams({
         showFooter: true,
-        onFinish: () => setCurrentState(ChallengeState.Finished),
-        onNext:
-          problems[problemIndex + 1] === undefined
-            ? () => addProblem(() => setProblemIndex(problemIndex + 1))
-            : () => setProblemIndex(problemIndex + 1),
-        onPrevious:
-          problemIndex > 0 ? () => setProblemIndex(problemIndex - 1) : undefined
+        onFinish,
+        onNext,
+        onPrevious
       });
     } else {
       setFooterParams({ ...defaultFooterParams });
     }
-  }, [addProblem, currentState, problemIndex, problems, setFooterParams]);
-
-  const onStart = () => {
-    if (problems[problemIndex + 1] !== undefined) {
-      setProblemIndex(problemIndex + 1);
-      setCurrentState(ChallengeState.Running);
-    }
-  };
+  }, [currentState, onFinish, onNext, onPrevious, setFooterParams]);
 
   return (
     <div>
