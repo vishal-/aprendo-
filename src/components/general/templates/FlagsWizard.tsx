@@ -1,5 +1,8 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { ChallengeState } from "../../common/constants/app.enums";
+import {
+  ChallengeState,
+  type ChallengeStateType
+} from "../../common/constants/app.enums";
 import FlagSetup from "../molecules/FlagSetup";
 import countries from "../../../assets/json/nations.json";
 import flags from "../../../assets/json/flags.json";
@@ -16,7 +19,9 @@ import { defaultFooterParams } from "../../../context/context.defaults";
 import { useHeader } from "../../../context/HeaderContext";
 
 const FlagsWizard = () => {
-  const [currentState, setCurrentState] = useState(ChallengeState.Stopped);
+  const [currentState, setCurrentState] = useState<ChallengeStateType>(
+    ChallengeState.Stopped
+  );
   const [problemIndex, setProblemIndex] = useState<number>(-1);
   const [problems, setProblems] = useState<FlagProblemType[]>([]);
   const [bufferFlag, setBufferFlag] = useState<FlagProblemType>();

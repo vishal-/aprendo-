@@ -42,7 +42,6 @@ const MathSetup: React.FC<MathSetupProps> = ({
   return (
     <div className="p-3">
       <Select
-        id="select-operation"
         label="Choose your adventure:"
         options={operationOptions}
         value={operation}
@@ -50,7 +49,6 @@ const MathSetup: React.FC<MathSetupProps> = ({
       />
 
       <Select
-        id="select-time-limit"
         label="Time limit (in minutes):"
         options={timeLimitOptions}
         value={timeLimit.toString()}
@@ -60,7 +58,6 @@ const MathSetup: React.FC<MathSetupProps> = ({
       />
 
       <Select
-        id="select-operand-size"
         label="Operand size"
         options={operandSizeOptions}
         value={size.toString()}

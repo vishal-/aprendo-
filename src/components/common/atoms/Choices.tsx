@@ -1,0 +1,42 @@
+import { useMemo } from "react";
+import { getRandomUUID } from "../../utils/random.utils";
+
+interface ChoicesProps {
+  title?: string;
+  options: [label: string, value: string][];
+  selected?: string;
+  onChange: (value: string) => void;
+}
+
+const Choices: React.FC<ChoicesProps> = ({
+  title,
+  options,
+  onChange,
+  selected
+}) => {
+  const id = useMemo(() => getRandomUUID(), []);
+
+  return (
+    <div>
+      {title && <h5>{title}</h5>}
+
+      {options.map(([label, value]) => (
+        <div key={`choice-key-${id}-${value}`} className="form-check">
+          <input
+            className="form-check-input"
+            type="radio"
+            name={`choice-${id}`}
+            id={`choice-${id}-${value}`}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            checked={value === selected}
+          />
+          <label className="form-check-label" htmlFor={`choice-${id}-${value}`}>
+            {label}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+export default Choices;

@@ -1,18 +1,16 @@
+import { useMemo } from "react";
+import { getRandomUUID } from "../../utils/random.utils";
+
 interface SelectProps {
-  id: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: { optionLabel: string; optionValue: string }[];
 }
 
-const Select: React.FC<SelectProps> = ({
-  id,
-  label,
-  value,
-  onChange,
-  options
-}) => {
+const Select: React.FC<SelectProps> = ({ label, value, onChange, options }) => {
+  const id = useMemo(() => getRandomUUID(), []);
+
   return (
     <div className="mb-4">
       <label className="form-label" htmlFor={id}>
