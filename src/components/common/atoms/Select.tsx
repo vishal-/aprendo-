@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { getRandomUUID } from "../../utils/random.utils";
+import { getRandomId } from "../../utils/random.utils";
 
 interface SelectProps {
   label: string;
@@ -9,7 +9,7 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({ label, value, onChange, options }) => {
-  const id = useMemo(() => getRandomUUID(), []);
+  const id = useMemo(() => getRandomId(), []);
 
   return (
     <div className="mb-4">

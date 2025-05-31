@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { getRandomUUID } from "../../utils/random.utils";
+import { getRandomId } from "../../utils/random.utils";
 
 interface ChoicesProps {
   title?: string;
-  options: [label: string, value: string][];
+  options: { label: string; value: string }[];
   selected?: string;
   onChange: (value: string) => void;
 }
@@ -14,13 +14,13 @@ const Choices: React.FC<ChoicesProps> = ({
   onChange,
   selected
 }) => {
-  const id = useMemo(() => getRandomUUID(), []);
+  const id = useMemo(() => getRandomId(), []);
 
   return (
     <div>
       {title && <h5>{title}</h5>}
 
-      {options.map(([label, value]) => (
+      {options.map(({ label, value }) => (
         <div key={`choice-key-${id}-${value}`} className="form-check">
           <input
             className="form-check-input"

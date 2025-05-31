@@ -29,6 +29,8 @@ interface ProblemWizardProps {
     cols: ResultsType;
     results: ResultsType[];
   };
+  onNext: () => void;
+  onPrevious: () => void;
 }
 
 const ProblemWizard: React.FC<ProblemWizardProps> = ({
@@ -44,7 +46,9 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
   stoppedElement,
   timeUpElement,
   disableStart,
-  responseParams
+  responseParams,
+  onNext,
+  onPrevious
 }) => {
   const { setHeaderParams, timer } = useHeader();
   const { setFooterParams } = useFooter();
@@ -85,13 +89,13 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
       setFooterParams({
         showFooter: true,
         onFinish,
-        onNext: undefined,
-        onPrevious: undefined
+        onNext,
+        onPrevious
       });
     } else {
       setFooterParams({ ...defaultFooterParams });
     }
-  }, [onFinish, setFooterParams, wizardState]);
+  }, [onFinish, onNext, onPrevious, setFooterParams, wizardState]);
 
   console.log(wizardState);
 

@@ -25,7 +25,7 @@ const ResponseSummary: React.FC<ResponseSummaryProps> = ({ cols, results }) => {
             <th>{cols["problem"]}</th>
             <th>{cols["solution"]}</th>
             <th>{cols["answer"]}</th>
-            <th>&160;</th>
+            <th>&#160;</th>
           </tr>
         </thead>
 
