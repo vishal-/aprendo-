@@ -14,14 +14,14 @@ const Home = () => {
       route: HashRoutes.Maths
     },
     {
-      label: "G.K",
-      imageSource: GkImg,
-      route: HashRoutes.General
-    },
-    {
       label: "English",
       imageSource: EnglishImg,
       route: HashRoutes.English
+    },
+    {
+      label: "G.K",
+      imageSource: GkImg,
+      route: HashRoutes.General
     }
   ];
 
@@ -33,7 +33,7 @@ const Home = () => {
           className="mx-5 my-2 px-3 cursor-pointer"
           onClick={() => navigate(route)}
         >
-          <img src={imageSource} alt={label} className="img-fluid" />
+          <img src={imageSource} alt={label} className="img-fluid border" />
         </div>
       ))}
     </div>
