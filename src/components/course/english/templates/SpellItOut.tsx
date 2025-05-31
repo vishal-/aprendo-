@@ -57,7 +57,6 @@ const SpellItOut = () => {
         onCancel={() => undefined}
         disableStart={timeLimit === undefined}
         problemElement={<></>}
-        resultElement={<></>}
         stoppedElement={stoppedElement}
       />
     </>

@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect } from "react";
+import StartCancel from "../atoms/StartCancel";
 import {
   ChallengeState,
   type ChallengeStateType
 } from "../constants/app.enums";
 import { useHeader } from "../../../context/HeaderContext";
-import StartCancel from "../atoms/StartCancel";
-import { getTimeByMinutes } from "../../utils/app.utils";
 import { useFooter } from "../../../context/FooterContext";
 import { defaultFooterParams } from "../../../context/context.defaults";
-import MainMenuBtn from "../atoms/MainMenuBtn";
+import timeupImg from "../../../assets/images/time_up.png";
+import { getTimeByMinutes } from "../../utils/app.utils";
+import type { ResultsType } from "../../constants/wizard.types";
+import ResponseSummary from "./ResponseSummary";
 
 interface ProblemWizardProps {
   title: string;
@@ -16,12 +18,17 @@ interface ProblemWizardProps {
   setWizardState: (state: ChallengeStateType) => void;
   readyElement: React.ReactElement;
   problemElement: React.ReactElement;
-  resultElement: React.ReactElement;
-  stoppedElement: React.ReactNode;
+  resultElement?: React.ReactElement;
+  stoppedElement: React.ReactElement;
+  timeUpElement?: React.ReactElement;
   onStart?: () => void;
   onCancel?: () => void;
   disableStart?: boolean;
   timeLimit?: number;
+  responseParams?: {
+    cols: ResultsType;
+    results: ResultsType[];
+  };
 }
 
 const ProblemWizard: React.FC<ProblemWizardProps> = ({
@@ -35,7 +42,9 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
   resultElement,
   problemElement,
   stoppedElement,
-  disableStart
+  timeUpElement,
+  disableStart,
+  responseParams
 }) => {
   const { setHeaderParams, timer } = useHeader();
   const { setFooterParams } = useFooter();
@@ -63,7 +72,7 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
     setHeaderParams({
       title: title,
       showHome: false,
-      onTimerExpire: () => undefined
+      onTimerExpire: () => setWizardState(ChallengeState.TimeUp)
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title]);
@@ -84,6 +93,8 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
     }
   }, [onFinish, setFooterParams, wizardState]);
 
+  console.log(wizardState);
+
   return (
     <div className="p-1">
       {wizardState === ChallengeState.Ready && (
@@ -102,13 +113,31 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
 
       {wizardState === ChallengeState.Running && <>{problemElement}</>}
 
-      {wizardState === ChallengeState.Finished && (
-        <>
-          {resultElement}
+      {wizardState === ChallengeState.TimeUp &&
+        (timeUpElement ? (
+          <>{timeUpElement}</>
+        ) : (
+          <div className="text-center my-3 py-3">
+            <div className="h3 mb-3">
+              <img src={timeupImg} className="img-fluid" />
+            </div>
 
-          <MainMenuBtn />
-        </>
-      )}
+            <button className="btn btn-secondary" onClick={onFinish}>
+              Finish
+            </button>
+          </div>
+        ))}
+
+      {wizardState === ChallengeState.Finished &&
+        ((resultElement && <>{resultElement}</>) ||
+          (responseParams ? (
+            <ResponseSummary
+              cols={responseParams?.cols}
+              results={responseParams?.results}
+            />
+          ) : (
+            <></>
+          )))}
     </div>
   );
 };
