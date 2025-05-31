@@ -18,7 +18,7 @@ export const getRandomFromDataset = (
   existing: string[]
 ): Record<string, unknown> | null => {
   const available = dataset.filter(
-    (item) => !existing.includes(item.id as string)
+    ({ label }) => !existing.includes((label as string).toUpperCase())
   );
 
   if (available.length > 0) {

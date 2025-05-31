@@ -76,8 +76,20 @@
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Cranberry.webp"
   },
   {
+    "label": "Curuba",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Curuba.webp"
+  },
+  {
+    "label": "Durian",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Durian.webp"
+  },
+  {
     "label": "Fig",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Fig.webp"
+  },
+  {
+    "label": "Granadilla",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Granadilla.webp"
   },
   {
     "label": "Grapefruit",
@@ -100,6 +112,10 @@
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Lime.webp"
   },
   {
+    "label": "Longan",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Longan.webp"
+  },
+  {
     "label": "Lychee",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Lychee.webp"
   },
@@ -108,16 +124,28 @@
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Mandarin.webp"
   },
   {
+    "label": "Mangosteen",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Mangosteen.webp"
+  },
+  {
     "label": "Melon",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Melon.webp"
   },
   {
-    "label": "Cantaloupe",
+    "label": "Cantaloupe Melon",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Melon-Cantaloupe.webp"
   },
   {
     "label": "Mulberry",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Mulberry.webp"
+  },
+  {
+    "label": "Nectarine",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Nectarine.webp"
+  },
+  {
+    "label": "Passionfruit",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Passionfruit.webp"
   },
   {
     "label": "Papaya",
@@ -140,8 +168,32 @@
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Plum.webp"
   },
   {
+    "label": "Pomelo",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Pomelo.webp"
+  },
+  {
+    "label": "Quince",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Quince.webp"
+  },
+  {
+    "label": "Rambutan",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Rambutan.webp"
+  },
+  {
     "label": "Raspberry",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Raspberry.webp"
+  },
+  {
+    "label": "Rose Apple",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Rose-Apple.webp"
+  },
+  {
+    "label": "Soursop",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Soursop.webp"
+  },
+  {
+    "label": "Star Apple",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Star-Apple.webp"
   },
   {
     "label": "Starfruit",
@@ -152,7 +204,19 @@
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Strawberry.webp"
   },
   {
+    "label": "Tamarillo",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Tamarillo.webp"
+  },
+  {
     "label": "Tamarind",
     "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Tamarind.webp"
+  },
+  {
+    "label": "Tangerine",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Tangerine.webp"
+  },
+  {
+    "label": "Peruvian groundcherry",
+    "image": "http://fruitsnames.com/wp-content/uploads/2022/08/Uchuva.webp"
   }
 ]

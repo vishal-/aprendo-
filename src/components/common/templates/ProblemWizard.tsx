@@ -29,8 +29,8 @@ interface ProblemWizardProps {
     cols: ResultsType;
     results: ResultsType[];
   };
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 const ProblemWizard: React.FC<ProblemWizardProps> = ({
@@ -96,8 +96,6 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
       setFooterParams({ ...defaultFooterParams });
     }
   }, [onFinish, onNext, onPrevious, setFooterParams, wizardState]);
-
-  console.log(wizardState);
 
   return (
     <div className="problem-wizard p-1">

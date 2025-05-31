@@ -22,7 +22,7 @@ const ResponseSummary: React.FC<ResponseSummaryProps> = ({ cols, results }) => {
         <thead>
           <tr className="table-primary">
             <th>#</th>
-            <th>{cols["problem"]}</th>
+            <th style={{ maxWidth: "30%" }}>{cols["problem"]}</th>
             <th>{cols["solution"]}</th>
             <th>{cols["answer"]}</th>
             <th>&#160;</th>
