@@ -17,11 +17,11 @@ const Choices: React.FC<ChoicesProps> = ({
   const id = useMemo(() => getRandomId(), []);
 
   return (
-    <div>
-      {title && <h5>{title}</h5>}
+    <div className="text-start">
+      {title && <h5 className="mb-4">{title}</h5>}
 
       {options.map(({ label, value }) => (
-        <div key={`choice-key-${id}-${value}`} className="form-check">
+        <div key={`choice-key-${id}-${value}`} className="form-check my-2">
           <input
             className="form-check-input"
             type="radio"

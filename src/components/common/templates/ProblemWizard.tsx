@@ -100,7 +100,7 @@ const ProblemWizard: React.FC<ProblemWizardProps> = ({
   console.log(wizardState);
 
   return (
-    <div className="p-1">
+    <div className="problem-wizard p-1">
       {wizardState === ChallengeState.Ready && (
         <>
           {readyElement}

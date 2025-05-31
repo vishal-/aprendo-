@@ -1,34 +1,32 @@
-import { Keypad } from "../../../common/atoms";
+import Keypad from "../../../common/molecules/Keypad";
+import WordBox from "../../../common/molecules/WordBox";
 import type { SpellItProblemType } from "../constants/english.types";
 
 interface SpellProblemProps {
   problemList: SpellItProblemType[];
   currentIndex: number;
+  onAnswer: (w: string) => void;
 }
 
 const SpellProblem: React.FC<SpellProblemProps> = ({
   problemList,
-  currentIndex
+  currentIndex,
+  onAnswer
 }) => {
-  const word = problemList[currentIndex]?.word;
+  const { word, image, answer } = problemList[currentIndex];
+
+  const keySelectHandler = (letter: string) =>
+    onAnswer(answer.length < word.length ? answer + letter : answer);
 
   return (
-    <div className="p-3">
-      {word}
-
-      <div className="text-center">
-        {word.split("").map((ab, i) => (
-          <span
-            key={`alphabet-${word}-${i}-${ab}`}
-            className="px-3 mx-1 border-bottom"
-            data-val={ab}
-          >
-            &#160;
-          </span>
-        ))}
+    <div className="spell-problem text-center">
+      <div>
+        <img src={image} className="img-fluid" alt="Spell this" />
       </div>
 
-      <Keypad onKeySelect={() => undefined} />
+      <WordBox word={answer} size={word.length} onChange={(s) => onAnswer(s)} />
+
+      <Keypad onKeySelect={keySelectHandler} />
     </div>
   );
 };

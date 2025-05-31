@@ -22,10 +22,10 @@ const English = () => {
   }, []);
 
   return (
-    <div>
+    <div className="page-english">
       {topic === undefined && (
         <button
-          className="btn btn-outline-dark w-100"
+          className="btn btn-outline-dark w-75 mx-auto d-block my-5"
           onClick={() => setTopic(Topics.Spell)}
         >
           Spell the picture

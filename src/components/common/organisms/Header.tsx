@@ -18,9 +18,9 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-dark-subtle text-danger-emphasis mb-3 p-3">
-      <nav className="row">
-        <div className="col-2">
+    <header className="bg-dark-subtle text-danger-emphasis p-3">
+      <nav className="d-flex justify-content-center align-items-center">
+        <div className="w-25">
           {showHome && (
             <button className="btn btn btn-dark" onClick={onReturnHome}>
               <FaHome />
@@ -28,10 +28,10 @@ const Header: React.FC = () => {
           )}
         </div>
 
-        <div className="col-8 display-5 text-center">{title}</div>
+        <div className="display-5 text-center w-50">{title}</div>
 
         {timer.isRunning && (
-          <div className="col-2 text-center">
+          <div className="text-center w-25">
             <div>Timer</div>
             <div className="d-flex justify-content-center">
               <div className="me-1">

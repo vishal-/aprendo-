@@ -24,7 +24,7 @@ const SpellItOut = () => {
     ChallengeState.Stopped
   );
   const [category, setCategory] = useState<string>(SpellOptions[0].value);
-  const [timeLimit, setTimeLimit] = useState<number>(1);
+  const [timeLimit, setTimeLimit] = useState<number>(10);
   const [dataset, updateDataset] = useState<EnglishDataSetType[]>([]);
   const [problemList, setProblemList] = useState<SpellItProblemType[]>([]);
   const [bufferProblem, setBufferProblem] = useState<SpellItProblemType>();
@@ -43,6 +43,57 @@ const SpellItOut = () => {
       setCurrentIndex(0);
     }
   };
+
+  const setAnswer = (ans: string) => {
+    const updatedList = [...problemList];
+    updatedList[currentIndex].answer = ans;
+    setProblemList(updatedList);
+  };
+
+  const readyElement = (
+    <div className="px-5">
+      <PickTime
+        onChange={(v) => setTimeLimit(parseInt(v, 10))}
+        value={`${timeLimit}`}
+      />
+    </div>
+  );
+
+  const stoppedElement = (
+    <div className="m-5 px-5">
+      <Choices
+        title="Select a category"
+        options={SpellOptions}
+        selected={category}
+        onChange={(value) => setCategory(value)}
+      />
+
+      <button
+        className="btn mt-5 btn-primary w-100"
+        disabled={category === undefined}
+        onClick={getReady}
+      >
+        Next
+      </button>
+    </div>
+  );
+
+  const responseParams = useMemo(() => {
+    return {
+      cols: {
+        problem: "Image",
+        solution: "Name",
+        answer: "Answer",
+        isCorrect: false
+      },
+      results: problemList.map((item) => ({
+        problem: <img src={item.image} className="img-fluid w-10" />,
+        solution: item.word,
+        answer: item.answer,
+        isCorrect: item.answer === item.word.toLowerCase()
+      }))
+    };
+  }, [problemList]);
 
   useEffect(() => {
     if (dataset.length > 0 && bufferProblem === undefined) {
@@ -64,53 +115,6 @@ const SpellItOut = () => {
     }
   }, [bufferProblem, dataset, problemList]);
 
-  const readyElement = (
-    <div className="px-5">
-      <PickTime
-        onChange={(v) => setTimeLimit(parseInt(v, 10))}
-        value={`${timeLimit}`}
-      />
-    </div>
-  );
-
-  const stoppedElement = (
-    <div className="m-5">
-      <Choices
-        title="Select a category"
-        options={SpellOptions}
-        selected={category}
-        onChange={(value) => setCategory(value)}
-      />
-
-      <button
-        className="btn my-3 btn-primary"
-        disabled={category === undefined}
-        onClick={getReady}
-      >
-        Next
-      </button>
-    </div>
-  );
-
-  const responseParams = useMemo(() => {
-    return {
-      cols: {
-        problem: "Problem",
-        solution: "Solution",
-        answer: "Answer",
-        isCorrect: false
-      },
-      results: [
-        {
-          problem: "Problem",
-          solution: "Solution",
-          answer: "Answer",
-          isCorrect: true
-        }
-      ]
-    };
-  }, []);
-
   return (
     <>
       <ProblemWizard
@@ -123,7 +127,11 @@ const SpellItOut = () => {
         onCancel={() => undefined}
         disableStart={timeLimit === undefined}
         problemElement={
-          <SpellProblem problemList={problemList} currentIndex={currentIndex} />
+          <SpellProblem
+            problemList={problemList}
+            currentIndex={currentIndex}
+            onAnswer={(w) => setAnswer(w)}
+          />
         }
         stoppedElement={stoppedElement}
         responseParams={responseParams}
