@@ -7,13 +7,13 @@ import { calculatePercentage } from "../../utils/math.utils";
 interface ResponseSummaryProps {
   cols: ResultsType;
   results: ResultsType[];
-  problemIsImage: boolean;
+  problemIsImage?: boolean;
 }
 
 const ResponseSummary: React.FC<ResponseSummaryProps> = ({
   cols,
   results,
-  problemIsImage
+  problemIsImage = false
 }) => {
   const correctAnswers = useMemo(() => {
     return results.filter(({ isCorrect }) => isCorrect);
