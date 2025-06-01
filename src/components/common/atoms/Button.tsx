@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <button className={`btn ${btnClass}`} onClick={clickHandler}>
+    <button className={`btn w-100 ${btnClass}`} onClick={clickHandler}>
       {label}
     </button>
   );

@@ -5,3 +5,6 @@ export const ChallengeState = {
   TimeUp: "timeup",
   Finished: "finished"
 };
+
+export type ChallengeStateType =
+  (typeof ChallengeState)[keyof typeof ChallengeState];

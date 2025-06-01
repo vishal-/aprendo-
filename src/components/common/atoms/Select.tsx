@@ -1,22 +1,20 @@
+import { useMemo } from "react";
+import { getRandomId } from "../../utils/random.utils";
+
 interface SelectProps {
-  id: string;
-  label: string;
+  title: string;
   value: string;
   onChange: (value: string) => void;
-  options: { optionLabel: string; optionValue: string }[];
+  options: { label: string; value: string }[];
 }
 
-const Select: React.FC<SelectProps> = ({
-  id,
-  label,
-  value,
-  onChange,
-  options
-}) => {
+const Select: React.FC<SelectProps> = ({ title, value, onChange, options }) => {
+  const id = useMemo(() => getRandomId(), []);
+
   return (
-    <div className="mx-x my-2">
+    <div className="mb-4">
       <label className="form-label" htmlFor={id}>
-        {label}
+        {title}
       </label>
 
       <select
@@ -25,12 +23,12 @@ const Select: React.FC<SelectProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
-        {options.map(({ optionLabel, optionValue }) => (
+        {options.map((option) => (
           <option
-            key={`${id}_${optionLabel}_${optionLabel}`}
-            value={optionValue}
+            key={`${id}_${option.label}_${option.label}`}
+            value={option.value}
           >
-            {optionLabel}
+            {option.label}
           </option>
         ))}
       </select>

@@ -2,39 +2,40 @@ import { useNavigate } from "react-router-dom";
 import { HashRoutes } from "../../config";
 import MathImg from "../../../assets/images/math_logo.jpg";
 import GkImg from "../../../assets/images/general_knowledge.webp";
-
-const NavBtn = ({
-  clickHandler,
-  imageSource,
-  label
-}: {
-  clickHandler: () => void;
-  imageSource: string;
-  label: string;
-}) => (
-  <div className="my-3 px-3 cursor-pointer" onClick={clickHandler}>
-    <img src={imageSource} alt={label} className="img-fluid" />
-  </div>
-);
+import EnglishImg from "../../../assets/images/english_logo.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
 
+  const courses = [
+    {
+      label: "Maths",
+      imageSource: MathImg,
+      route: HashRoutes.Maths
+    },
+    {
+      label: "English",
+      imageSource: EnglishImg,
+      route: HashRoutes.English
+    },
+    {
+      label: "G.K",
+      imageSource: GkImg,
+      route: HashRoutes.General
+    }
+  ];
+
   return (
     <div className="text-center">
-      <h3 className="my-3">Select one</h3>
-
-      <NavBtn
-        clickHandler={() => navigate(HashRoutes.Maths)}
-        label="Maths"
-        imageSource={MathImg}
-      />
-
-      <NavBtn
-        clickHandler={() => navigate(HashRoutes.General)}
-        label="G.K"
-        imageSource={GkImg}
-      />
+      {courses.map(({ label, route, imageSource }) => (
+        <div
+          key={`course_${label}`}
+          className="mx-5 my-2 px-3 cursor-pointer"
+          onClick={() => navigate(route)}
+        >
+          <img src={imageSource} alt={label} className="img-fluid border" />
+        </div>
+      ))}
     </div>
   );
 };
