@@ -7,12 +7,21 @@ import { calculatePercentage } from "../../utils/math.utils";
 interface ResponseSummaryProps {
   cols: ResultsType;
   results: ResultsType[];
+  problemIsImage: boolean;
 }
 
-const ResponseSummary: React.FC<ResponseSummaryProps> = ({ cols, results }) => {
+const ResponseSummary: React.FC<ResponseSummaryProps> = ({
+  cols,
+  results,
+  problemIsImage
+}) => {
   const correctAnswers = useMemo(() => {
     return results.filter(({ isCorrect }) => isCorrect);
   }, [results]);
+
+  const problemStyle: React.CSSProperties = problemIsImage
+    ? {}
+    : { width: "5%" };
 
   return (
     <>
@@ -21,10 +30,12 @@ const ResponseSummary: React.FC<ResponseSummaryProps> = ({ cols, results }) => {
       <table className="table">
         <thead>
           <tr className="table-primary">
-            <th>#</th>
-            <th style={{ maxWidth: "30%" }}>{cols["problem"]}</th>
-            <th>{cols["solution"]}</th>
-            <th>{cols["answer"]}</th>
+            <th className="text-center">#</th>
+            <th style={problemStyle} className="text-center">
+              {cols["problem"]}
+            </th>
+            <th className="text-center">{cols["solution"]}</th>
+            <th className="text-center">{cols["answer"]}</th>
             <th>&#160;</th>
           </tr>
         </thead>

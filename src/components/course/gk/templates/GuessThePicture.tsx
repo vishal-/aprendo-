@@ -16,8 +16,8 @@ import {
 import GuessPictureProblem from "../organisms/GuessPictureProblem";
 
 const CategoryList = [
-  { label: "Flags", value: "flag" },
-  { label: "Logos", value: "logo" }
+  { label: "Flags", value: "flag" }
+  //   { label: "Logos", value: "logo" }
 ];
 
 const GuessThePicture: React.FC = () => {
@@ -146,6 +146,7 @@ const GuessThePicture: React.FC = () => {
 
   const responseParams = useMemo(() => {
     return {
+      problemIsImage: true,
       cols: {
         problem: "Picture",
         solution: "Name",

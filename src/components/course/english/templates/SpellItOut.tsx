@@ -95,6 +95,7 @@ const SpellItOut = () => {
 
   const responseParams = useMemo(() => {
     return {
+      problemIsImage: true,
       cols: {
         problem: "Image",
         solution: "Name",
@@ -140,7 +141,7 @@ const SpellItOut = () => {
           setBufferProblem({
             image: item.image,
             thumbnail: item.thumbnail || item.image,
-            word: item.label.toUpperCase(),
+            word: item.label,
             answer: ""
           });
         });

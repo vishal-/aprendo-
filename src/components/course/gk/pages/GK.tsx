@@ -8,7 +8,7 @@ const GK: React.FC = () => {
     <div className="page-gk my-3">
       {topic === undefined && (
         <button
-          className="btn btn-outline-dark"
+          className="btn btn-outline-dark mx-auto w-75 my-5 d-block"
           onClick={() => setTopic("picture")}
         >
           Guess the picture
