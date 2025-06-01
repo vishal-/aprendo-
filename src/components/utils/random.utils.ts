@@ -18,7 +18,7 @@ export const getRandomFromDataset = (
   existing: string[]
 ): Record<string, unknown> | null => {
   const available = dataset.filter(
-    ({ label }) => !existing.includes((label as string).toUpperCase())
+    ({ label }) => !existing.includes(label as string)
   );
 
   if (available.length > 0) {
@@ -27,4 +27,26 @@ export const getRandomFromDataset = (
   }
 
   return null;
+};
+
+export const getRandomOptionsFromDataset = (
+  dataset: Record<string, unknown>[],
+  original: string,
+  size: number = 6
+): string[] => {
+  const itemList = dataset.map(({ label }) => label as string);
+  const options = [original];
+
+  while (options.length < size) {
+    const option = itemList[Math.floor(Math.random() * itemList.length)];
+
+    if (!options.includes(option)) {
+      options.push(option);
+    }
+  }
+
+  options.sort(() => Math.random() - 0.2);
+  options.sort(() => Math.random() - 0.6);
+
+  return options;
 };
