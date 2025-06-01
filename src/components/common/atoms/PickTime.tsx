@@ -1,11 +1,11 @@
 import Select from "./Select";
 
 const timeLimitOptions = Array.from({ length: 16 }, (_, i) => {
-  const optionValue = `${i + 1}`;
+  const value = `${i + 1}`;
 
   return {
-    optionLabel: optionValue,
-    optionValue
+    label: `${value} minutes`,
+    value
   };
 });
 
@@ -14,7 +14,7 @@ const PickTime: React.FC<{ value: string; onChange: (v: string) => void }> = ({
   onChange
 }) => (
   <Select
-    label="Time limit:"
+    title="Time limit"
     value={value}
     onChange={onChange}
     options={timeLimitOptions}

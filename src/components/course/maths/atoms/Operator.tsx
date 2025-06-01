@@ -1,4 +1,4 @@
-import { MathOperation } from "../constants/math.enum";
+import { MathOperation } from "../constants/math.types";
 
 interface OperatorProps {
   operation: string;

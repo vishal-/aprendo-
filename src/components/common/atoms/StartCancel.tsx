@@ -17,11 +17,7 @@ const StartCancel: React.FC<StartCancelProps> = ({
     <div className="d-flex justify-content-center">
       {onCancel && (
         <>
-          <button
-            className="btn btn-danger"
-            disabled={onCancel === undefined}
-            onClick={onCancel}
-          >
+          <button className="btn btn-danger" onClick={onCancel}>
             <FaChevronLeft /> Back
           </button>
 

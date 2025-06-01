@@ -26,7 +26,7 @@ const SpellItOut = () => {
     ChallengeState.Stopped
   );
   const [category, setCategory] = useState<string>(SpellOptions[0].value);
-  const [timeLimit, setTimeLimit] = useState<number>(10);
+  const [timeLimit, setTimeLimit] = useState<number>(1);
   const [dataset, updateDataset] = useState<EnglishDataSetType[]>([]);
   const [problemList, setProblemList] = useState<SpellItProblemType[]>([]);
   const [bufferProblem, setBufferProblem] = useState<SpellItProblemType>();

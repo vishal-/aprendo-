@@ -35,11 +35,11 @@ const ResponseSummary: React.FC<ResponseSummaryProps> = ({ cols, results }) => {
               key={`result_${solution}_${answer}`}
               className={isCorrect ? "table-success" : "table-danger"}
             >
-              <td>{i + 1}</td>
-              <td>{problem}</td>
-              <td>{solution}</td>
-              <td>{answer}</td>
-              <td>{isCorrect ? "✅" : "❌"}</td>
+              <td className="text-center">{i + 1}</td>
+              <td className="text-center">{problem}</td>
+              <td className="text-center">{solution}</td>
+              <td className="text-center">{answer}</td>
+              <td className="text-center">{isCorrect ? "✅" : "❌"}</td>
             </tr>
           ))}
         </tbody>

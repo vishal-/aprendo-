@@ -19,7 +19,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-dark-subtle text-danger-emphasis p-3">
-      <nav className="d-flex justify-content-center align-items-center">
+      <nav className="nav text-center align-top">
         <div className="w-25">
           {showHome && (
             <button className="btn btn btn-dark" onClick={onReturnHome}>

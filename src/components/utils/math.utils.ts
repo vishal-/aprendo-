@@ -1,5 +1,7 @@
-import { MathOperation } from "../maths/constants/math.enum";
-import type { MProblem } from "../maths/constants/math.interfaces";
+import {
+  MathOperation,
+  type MathProblemType
+} from "../course/maths/constants/math.types";
 
 export const getRandom = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -22,7 +24,10 @@ export const createListOfRandomNumbers = (
   return numbers.sort(() => Math.random() - 0.5);
 };
 
-export const getProblem = (operation: string, size: number = 4): MProblem => {
+export const getProblem = (
+  operation: string,
+  size: number = 4
+): MathProblemType => {
   const min = Math.pow(10, size - 1);
   let operand1 = getRandom(min, min * 10 - 1);
   let operand2 = 1;

@@ -1,6 +1,5 @@
 import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import Maths from "./pages/Maths";
 import GK from "./pages/GK";
 import "../assets/styles/container.scss";
 import { HashRoutes } from "./config";
@@ -10,6 +9,7 @@ import Header from "./common/organisms/Header";
 import Footer from "./common/organisms/Footer";
 import { FooterProvider } from "../context/FooterContext";
 import English from "./course/english/pages/English";
+import Maths from "./course/maths/pages/Maths";
 
 const Container: React.FC = () => {
   return (
