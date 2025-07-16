@@ -2,5 +2,6 @@ export const HashRoutes = {
   Home: "/",
   Maths: "/maths",
   General: "/general",
-  English: "/english"
+  English: "/english",
+  Hindi:"/hindi"
 };
