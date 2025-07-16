@@ -10,6 +10,7 @@ import { FooterProvider } from "../context/FooterContext";
 import English from "./course/english/pages/English";
 import Maths from "./course/maths/pages/Maths";
 import GK from "./course/gk/pages/GK";
+import Hindi from "./course/hindi/pages/Hindi";
 
 const Container: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const Container: React.FC = () => {
               <Route path={HashRoutes.English} element={<English />} />
               <Route path={HashRoutes.General} element={<GK />} />
               <Route path={HashRoutes.Maths} element={<Maths />} />
+              <Route path={HashRoutes.Hindi} element={<Hindi />} />
               {/* <Route path="/" element={<Navigate replace to="/maths" />} /> */}
               <Route path="/" element={<Home />} />
             </Routes>

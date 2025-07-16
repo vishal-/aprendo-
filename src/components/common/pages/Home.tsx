@@ -3,6 +3,7 @@ import { HashRoutes } from "../../config";
 import MathImg from "../../../assets/images/math_logo.jpg";
 import GkImg from "../../../assets/images/general_knowledge.webp";
 import EnglishImg from "../../../assets/images/english_logo.jpg";
+import HindiImg from "../../../assets/images/hindi.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ const Home = () => {
       label: "English",
       imageSource: EnglishImg,
       route: HashRoutes.English
+    },
+      {
+      label: "Hindi",
+      imageSource: HindiImg,
+      route: HashRoutes.Hindi
     },
     {
       label: "G.K",
