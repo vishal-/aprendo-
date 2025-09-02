@@ -1,21 +1,24 @@
-
+'use client';
 import React from 'react';
 import Link from 'next/link';
 
 const Navbar = () => {
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="text-2xl font-bold text-gray-800">
-          <Link href="/">Aprendo</Link>
-        </div>
-        <div className="flex items-center space-x-8">
-          <Link href="/about" className="text-gray-600 hover:text-blue-500">About</Link>
-          <Link href="/features" className="text-gray-600 hover:text-blue-500">Features</Link>
-          <Link href="/login" className="text-gray-600 hover:text-blue-500">Login</Link>
-          <Link href="/signup" className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600">
-            Sign Up
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex justify-between items-center py-4">
+          <Link href="/" className="text-2xl font-bold text-gray-900">
+            Aprendo
           </Link>
+          
+          <div className="flex items-center space-x-6">
+            <Link href="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Login
+            </Link>
+            <Link href="/signup" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+              Sign Up
+            </Link>
+          </div>
         </div>
       </div>
     </nav>

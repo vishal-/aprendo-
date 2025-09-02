@@ -1,15 +1,93 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  role        Role      @default(STUDENT)
+  tests       Test[]    @relation("TeacherTests")
+  assignments Assignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id          String    @id @default(cuid())
+  title       String
+  subject     String
+  grade       Int
+  author      User      @relation("TeacherTests", fields: [authorId], references: [id])
+  authorId    String
+  questions   Question[]
+  assignments Assignment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  text      String
+  type      QuestionType
+  options   Json?    // For multiple-choice questions
+  test      Test     @relation(fields: [testId], references: [id])
+  testId    String
+  answers   Answer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Assignment {
+  id        String   @id @default(cuid())
+  student   User     @relation(fields: [studentId], references: [id])
+  studentId String
+  test      Test     @relation(fields: [testId], references: [id])
+  testId    String
+  status    AssignmentStatus @default(UPCOMING)
+  score     Float?
+  answers   Answer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Answer {
+  id           String     @id @default(cuid())
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId String
+  question     Question   @relation(fields: [questionId], references: [id])
+  questionId   String
+  value        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SUBJECTIVE
+}
+
+enum AssignmentStatus {
+  UPCOMING
+  IN_PROGRESS
+  COMPLETED
 }
