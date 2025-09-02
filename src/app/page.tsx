@@ -23,15 +23,15 @@ export default function Home() {
             Streamline Your Testing Process
           </h1>
           <p className="text-lg md:text-xl text-gray-300 mb-8 md:mb-12 max-w-3xl mx-auto">
-            A simple and efficient platform for educators to create, manage, and grade tests, 
+            A simple and efficient platform for educators to create, manage, and grade tests,
             while offering students a straightforward way to take them.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/teacher/dashboard" className="bg-primary text-white px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-secondary">
-              I'm a Teacher
+              I&#39;m a Teacher
             </Link>
             <Link href="/student/tests" className="border-2 border-primary text-primary px-6 md:px-8 py-3 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-primary hover:text-white">
-              I'm a Student
+              I&#39;m a Student
             </Link>
           </div>
         </div>
