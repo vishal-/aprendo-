@@ -1,6 +1,11 @@
+'use client';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/auth';
+import { auth } from '@/lib/firebase';
 
 export default function Header() {
+  const { user, loading } = useAuthStore();
+
   return (
     <header className="border-b bg-gray-900 border-gray-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -9,9 +14,20 @@ export default function Header() {
             Aprendo
           </Link>
           <div className="flex items-center space-x-3 md:space-x-4">
-            <Link href="/auth" className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base">
-              Get started
-            </Link>
+            {loading ? (
+              <div>Loading...</div>
+            ) : user ? (
+              <>
+                <span className="text-light">{user.displayName || user.email}</span>
+                <button onClick={() => auth.signOut()} className="bg-primary text-dark px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link href="/auth" className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base">
+                Get started
+              </Link>
+            )}
           </div>
         </div>
       </div>
