@@ -5,14 +5,21 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
+  const router = useRouter();
+
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      toast.success('Logged in successfully!');
+      router.push('/student/tests');
     } catch (error) {
       console.error(error);
+      toast.error('Something went wrong!');
     }
   };
 
