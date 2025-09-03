@@ -3,6 +3,8 @@ import "./globals.css";
 import { AuthProvider } from '@/components/AuthProvider';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
 
 export const metadata: Metadata = {
   title: "Aprendo - Practice. Learn. Excel.",
@@ -16,8 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>{children}</AuthProvider>
+      <body className="bg-gray-900 text-white">
+        <AuthProvider>
+          <Header />
+          <main className="min-h-[calc(100vh-200px)]">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
         <ToastContainer />
       </body>
     </html>
