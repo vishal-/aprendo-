@@ -73,6 +73,7 @@ export default function UserDetailsForm() {
     setIsSubmitting(true);
     try {
       const token = await user?.getIdToken();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { uid, ...dataToSend } = formData;
 
       const response = await fetch("/api/user/info", {
