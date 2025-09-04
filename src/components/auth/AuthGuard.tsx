@@ -13,7 +13,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Public paths that don't require authentication
-    const publicPaths = ["/", "/auth"];
+    const publicPaths = ["/", "/auth", "/terms", "/privacy", "/about"];
     if (publicPaths.includes(pathname)) {
       return;
     }

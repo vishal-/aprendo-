@@ -24,21 +24,11 @@ export default function UserDetailsForm() {
   });
 
   useEffect(() => {
-    // Simulate fetching user details from zustand store using user.uid
-    if (user && user.uid) {
-      // Example: fetchUserDetails(user.uid)
-      // For demo, use zustand store (replace with DB/API call in prod)
-      if (userDetails && userDetails.uid === user.uid) {
-        if (userDetails.termsAccepted) {
-          router.push("/dashboard");
-        }
-        // If terms not accepted, stay on form
-      }
-      // If not found, stay on form
-    } else {
-      router.push("/login");
+    // Pre-fill form with existing user details if available
+    if (userDetails && user?.uid === userDetails.uid) {
+      setFormData(userDetails);
     }
-  }, [user, userDetails, router, setUserDetails]);
+  }, [user, userDetails]);
 
   const handleChange = (
     e: React.ChangeEvent<
