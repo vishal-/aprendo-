@@ -69,14 +69,16 @@ export default function UserDetailsForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">User Details</h1>
+    <div className="min-h-screen flex items-start justify-center bg-gray-900 p-4">
+      <div className="bg-gray-800 p-8 mt-12 rounded-lg shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-white">
+          User Details
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
               htmlFor="displayName"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Display Name
             </label>
@@ -87,13 +89,13 @@ export default function UserDetailsForm() {
               value={formData.displayName}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             />
           </div>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Email
             </label>
@@ -104,13 +106,13 @@ export default function UserDetailsForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             />
           </div>
           <div>
             <label
               htmlFor="profilePicture"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Profile Picture URL
             </label>
@@ -120,13 +122,13 @@ export default function UserDetailsForm() {
               id="profilePicture"
               value={formData.profilePicture}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             />
           </div>
           <div>
             <label
               htmlFor="phone"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Phone
             </label>
@@ -136,25 +138,25 @@ export default function UserDetailsForm() {
               id="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             />
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <input
               type="checkbox"
               name="phoneVerified"
               id="phoneVerified"
               checked={formData.phoneVerified}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
             />
             <label
               htmlFor="phoneVerified"
-              className="ml-2 block text-sm text-gray-900"
+              className="ml-2 block text-sm text-gray-300"
             >
               Phone Verified
             </label>
-          </div>
+          </div> */}
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -163,11 +165,11 @@ export default function UserDetailsForm() {
               checked={formData.termsAccepted}
               onChange={handleChange}
               required
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
             />
             <label
               htmlFor="termsAccepted"
-              className="ml-2 block text-sm text-gray-900"
+              className="ml-2 block text-sm text-gray-300"
             >
               I accept the terms and conditions
             </label>
@@ -175,7 +177,7 @@ export default function UserDetailsForm() {
           <div>
             <label
               htmlFor="role"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-300"
             >
               Role
             </label>
@@ -184,13 +186,11 @@ export default function UserDetailsForm() {
               id="role"
               value={formData.role}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             >
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-              <option value="parent">Parent</option>
               <option value="tutor">Tutor</option>
-              <option value="moderator">Moderator</option>
+              <option value="student">Student</option>
+              <option value="parent">Parent</option>
               <option value="academy">Academy</option>
             </select>
           </div>
