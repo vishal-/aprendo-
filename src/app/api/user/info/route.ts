@@ -1,6 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const uid = searchParams.get('uid');
+
+    if (!uid) {
+      return NextResponse.json(
+        { error: 'UID is required' },
+        { status: 400 }
+      );
+    }
+
+    const userDetails = await prisma.userDetails.findUnique({
+      where: { uid },
+    });
+
+    return NextResponse.json({ success: true, data: userDetails });
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import AuthGuard from "@/components/auth/AuthGuard";
-import { AuthProvider } from "@/components/AuthProvider";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Aprendo - Practice. Learn. Excel.",
