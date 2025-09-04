@@ -11,24 +11,23 @@ datasource db {
 }
 
 model UserDetails {
-  id            String    @id @default(cuid())
-  firstName     String
-  lastName      String
-  email         String    @unique
-  phone         String
-  address       String
-  city          String
-  country       String
-  postalCode    String
-  photoURL      String?/
-  role          UserRole
+  uid              String   @id @default(cuid())
+  email            String   @unique
+  profilePicture   String
+  phone            String
+  phoneVerified    Boolean
+  termsAccepted    Boolean
+  termsAcceptedAt  DateTime
+  createdAt        DateTime @default(now())
+  displayName      String
+  role             UserRole
 }
 
 enum UserRole {
-  ADMIN
-  PARENT
-  TUTOR
-  STUDENT
-  MODERATOR
-  ACADEMY
+  admin
+  parent
+  tutor
+  student
+  moderator
+  academy
 }
