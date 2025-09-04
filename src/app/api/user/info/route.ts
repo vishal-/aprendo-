@@ -13,19 +13,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userDetails = await prisma.user.upsert({
-      where: { id: uid },
+    const userDetails = await prisma.userDetails.upsert({
+      where: { uid: uid },
       update: {
-        name: displayName,
-        image: profilePicture || null,
-        // Add other fields as needed based on your schema
+        displayName,
+        profilePicture: profilePicture || "",
+        phone: phone || "",
+        role,
+        termsAccepted,
+        termsAcceptedAt: termsAccepted ? new Date() : new Date(),
       },
       create: {
-        id: uid,
+        uid,
         email,
-        name: displayName,
-        image: profilePicture || null,
-        // Add other fields as needed based on your schema
+        displayName,
+        profilePicture: profilePicture || "",
+        phone: phone || "",
+        phoneVerified: false,
+        role,
+        termsAccepted,
+        termsAcceptedAt: new Date(),
       },
     });
 

@@ -40,6 +40,12 @@ export default function UserDetailsForm() {
     >
   ) => {
     const { name, value, type } = e.target;
+
+    // Clear form error when user makes changes
+    if (formError) {
+      setFormError("");
+    }
+
     if (type === "checkbox") {
       setFormData({
         ...formData,
@@ -95,8 +101,8 @@ export default function UserDetailsForm() {
         <h1 className="text-2xl font-bold mb-6 text-center text-white">
           User Details
         </h1>
-        {formError && <Feedback message={formError} variant="danger" />}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {formError && <Feedback message={formError} variant="danger" />}
           <div>
             <label
               htmlFor="displayName"
@@ -189,7 +195,6 @@ export default function UserDetailsForm() {
               id="termsAccepted"
               checked={formData.termsAccepted}
               onChange={handleChange}
-              required
               className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
             />
             <label
