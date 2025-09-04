@@ -6,6 +6,8 @@ import Link from "next/link";
 import { UserDetails, UserRole } from "../../../types/userDetails";
 import { useAuthStore } from "@/store/auth";
 import { useUserDetailsStore } from "@/store/userDetailsStore";
+import { Toast } from "@/components/ui/Toast";
+import Feedback from "@/components/ui/Feedback";
 
 export default function UserDetailsForm() {
   const router = useRouter();
@@ -23,6 +25,8 @@ export default function UserDetailsForm() {
     displayName: user?.displayName || "",
     role: UserRole.TUTOR
   });
+  const [formError, setFormError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (userDetails && user?.uid === userDetails.uid) {
@@ -48,30 +52,40 @@ export default function UserDetailsForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.termsAccepted) {
-      alert("You must accept the terms and conditions to proceed.");
+    setFormError("");
+
+    if (!formData.displayName.trim()) {
+      setFormError("Display name is required.");
       return;
     }
 
+    if (!formData.termsAccepted) {
+      setFormError("You must accept the terms and conditions to proceed.");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      const response = await fetch('/api/user/info', {
-        method: 'POST',
+      const response = await fetch("/api/user/info", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData)
       });
 
       if (response.ok) {
         setUserDetails(formData);
-        alert("User details saved successfully!");
+        Toast.success("User details saved successfully!");
         router.push("/dashboard");
       } else {
-        alert("Failed to save user details. Please try again.");
+        Toast.danger("Failed to save user details. Please try again.");
       }
     } catch (error) {
-      console.error('Error saving user details:', error);
-      alert("An error occurred. Please try again.");
+      console.error("Error saving user details:", error);
+      Toast.danger("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -81,6 +95,7 @@ export default function UserDetailsForm() {
         <h1 className="text-2xl font-bold mb-6 text-center text-white">
           User Details
         </h1>
+        {formError && <Feedback message={formError} variant="danger" />}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
@@ -182,16 +197,21 @@ export default function UserDetailsForm() {
               className="ml-2 block text-sm text-gray-300"
             >
               I accept the{" "}
-              <Link href="/terms" target="_blank" className="text-blue-400 hover:text-blue-300 underline">
+              <Link
+                href="/terms"
+                target="_blank"
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
                 terms and conditions
               </Link>
             </label>
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={isSubmitting}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save Details
+            {isSubmitting ? "Saving..." : "Save Details"}
           </button>
         </form>
       </div>
