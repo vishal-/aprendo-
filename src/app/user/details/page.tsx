@@ -72,12 +72,16 @@ export default function UserDetailsForm() {
 
     setIsSubmitting(true);
     try {
+      const token = await user?.getIdToken();
+      const { uid, ...dataToSend } = formData;
+
       const response = await fetch("/api/user/info", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(dataToSend)
       });
 
       if (response.ok) {

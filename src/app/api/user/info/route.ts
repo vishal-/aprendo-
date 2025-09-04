@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getUidFromToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const uid = searchParams.get('uid');
+    const uid = await getUidFromToken(request);
 
     if (!uid) {
       return NextResponse.json(
-        { error: 'UID is required' },
-        { status: 400 }
+        { error: 'Unauthorized' },
+        { status: 401 }
       );
     }
 
@@ -29,10 +29,19 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { uid, email, displayName, profilePicture, phone, role, termsAccepted } = body;
+    const uid = await getUidFromToken(request);
 
-    if (!uid || !email || !displayName || !termsAccepted) {
+    if (!uid) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { email, displayName, profilePicture, phone, role, termsAccepted } = body;
+
+    if (!email || !displayName || !termsAccepted) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }

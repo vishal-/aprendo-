@@ -18,7 +18,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       if (user && !userDetails && !isLoadingDetails) {
         setIsLoadingDetails(true);
         try {
-          const response = await fetch(`/api/user/info?uid=${user.uid}`);
+          const token = await user.getIdToken();
+          const response = await fetch('/api/user/info', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
           if (response.ok) {
             const result = await response.json();
             setUserDetails(result.data);
