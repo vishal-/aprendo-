@@ -11,7 +11,7 @@ export interface UserDetails {
     role: UserRole;
 }
 
-enum UserRole {
+export enum UserRole {
     ADMIN = "admin",
     PARENT = "parent",
     TUTOR = "tutor",
