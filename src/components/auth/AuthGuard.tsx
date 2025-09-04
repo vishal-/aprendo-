@@ -24,14 +24,14 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Always allow access to userDetails page
-    if (pathname === "/userDetails") {
+    // Always allow access to user details page
+    if (pathname === "/user/details") {
       return;
     }
 
     // If user is logged in but hasn't filled details or accepted terms, redirect to UserDetailsForm
     if (!userDetails?.termsAccepted) {
-      router.push("/userDetails");
+      router.push("/user/details");
       return;
     }
   }, [user, userDetails, router, pathname]);

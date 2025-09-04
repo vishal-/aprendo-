@@ -2,7 +2,8 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { UserDetails, UserRole } from "../../types/userDetails";
+import Link from "next/link";
+import { UserDetails, UserRole } from "../../../types/userDetails";
 import { useAuthStore } from "@/store/auth";
 import { useUserDetailsStore } from "@/store/userDetailsStore";
 
@@ -19,12 +20,11 @@ export default function UserDetailsForm() {
     termsAccepted: false,
     termsAcceptedAt: new Date(),
     createdAt: new Date(),
-    displayName: "",
+    displayName: user?.displayName || "",
     role: UserRole.TUTOR
   });
 
   useEffect(() => {
-    // Pre-fill form with existing user details if available
     if (userDetails && user?.uid === userDetails.uid) {
       setFormData(userDetails);
     }
@@ -52,10 +52,27 @@ export default function UserDetailsForm() {
       alert("You must accept the terms and conditions to proceed.");
       return;
     }
-    // Save details to zustand store (simulate DB save)
-    setUserDetails(formData);
-    alert("User details saved successfully!");
-    router.push("/dashboard");
+
+    try {
+      const response = await fetch('/api/user/info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setUserDetails(formData);
+        alert("User details saved successfully!");
+        router.push("/dashboard");
+      } else {
+        alert("Failed to save user details. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error saving user details:', error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
@@ -94,9 +111,8 @@ export default function UserDetailsForm() {
               name="email"
               id="email"
               value={formData.email}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
+              readOnly
+              className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-600 text-gray-300 cursor-not-allowed"
             />
           </div>
           <div>
@@ -131,39 +147,6 @@ export default function UserDetailsForm() {
               className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm p-2 bg-gray-700 text-white"
             />
           </div>
-          {/* <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="phoneVerified"
-              id="phoneVerified"
-              checked={formData.phoneVerified}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
-            />
-            <label
-              htmlFor="phoneVerified"
-              className="ml-2 block text-sm text-gray-300"
-            >
-              Phone Verified
-            </label>
-          </div> */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="termsAccepted"
-              id="termsAccepted"
-              checked={formData.termsAccepted}
-              onChange={handleChange}
-              required
-              className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
-            />
-            <label
-              htmlFor="termsAccepted"
-              className="ml-2 block text-sm text-gray-300"
-            >
-              I accept the terms and conditions
-            </label>
-          </div>
           <div>
             <label
               htmlFor="role"
@@ -183,6 +166,26 @@ export default function UserDetailsForm() {
               <option value="parent">Parent</option>
               <option value="academy">Academy</option>
             </select>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="termsAccepted"
+              id="termsAccepted"
+              checked={formData.termsAccepted}
+              onChange={handleChange}
+              required
+              className="h-4 w-4 text-blue-500 border-gray-600 rounded bg-gray-700"
+            />
+            <label
+              htmlFor="termsAccepted"
+              className="ml-2 block text-sm text-gray-300"
+            >
+              I accept the{" "}
+              <Link href="/terms" target="_blank" className="text-blue-400 hover:text-blue-300 underline">
+                terms and conditions
+              </Link>
+            </label>
           </div>
           <button
             type="submit"
