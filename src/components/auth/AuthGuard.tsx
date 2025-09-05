@@ -70,6 +70,16 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       router.push("/user/details");
       return;
     }
+
+    // Redirect to appropriate dashboard based on role
+    if (pathname === "/dashboard") {
+      if (userDetails?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/user/dashboard");
+      }
+      return;
+    }
   }, [user, userDetails, router, pathname, isLoadingDetails]);
 
   return <>{children}</>;

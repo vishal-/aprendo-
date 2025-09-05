@@ -88,7 +88,7 @@ export default function UserDetailsForm() {
       if (response.ok) {
         setUserDetails(formData);
         Toast.success("User details saved successfully!");
-        router.push("/dashboard");
+        router.push("/user/dashboard");
       } else {
         Toast.danger("Failed to save user details. Please try again.");
       }
