@@ -1,16 +1,58 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
+model Course {
+  id        Int      @id @default(autoincrement())
+  name      String   // e.g. "Grade 1", "Grade 5"
+  isBase    Boolean
+  ownerId   String
+  owner     UserInfo @relation("CourseOwner", fields: [ownerId], references: [uid])
+  curriculumRelations CurriculumRelation[]
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+model Subject {
+  id        Int      @id @default(autoincrement())
+  name      String   // e.g. "Mathematics", "Science"
+  isBase    Boolean
+  ownerId   String
+  owner     UserInfo @relation("SubjectOwner", fields: [ownerId], references: [uid])
+  curriculumRelations CurriculumRelation[]
 }
 
-model UserDetails {
+model Topic {
+  id        Int      @id @default(autoincrement())
+  name      String   // e.g. "Operations", "Geometry"
+  isBase    Boolean
+  ownerId   String
+  owner     UserInfo @relation("TopicOwner", fields: [ownerId], references: [uid])
+  curriculumRelations CurriculumRelation[]
+}
+
+model Subtopic {
+  id        Int      @id @default(autoincrement())
+  name      String   // e.g. "Addition", "Subtraction"
+  isBase    Boolean
+  ownerId   String
+  owner     UserInfo @relation("SubtopicOwner", fields: [ownerId], references: [uid])
+  curriculumRelations CurriculumRelation[]
+}
+
+/// Relations that define the curriculum hierarchy
+model CurriculumRelation {
+  id          Int        @id @default(autoincrement())
+  courseId    Int?
+  subjectId   Int?
+  topicId     Int?
+  subtopicId  Int?
+  ownerId     String?
+
+  course      Course?    @relation(fields: [courseId], references: [id])
+  subject     Subject?   @relation(fields: [subjectId], references: [id])
+  topic       Topic?     @relation(fields: [topicId], references: [id])
+  subtopic    Subtopic?  @relation(fields: [subtopicId], references: [id])
+  owner       UserInfo?  @relation(fields: [ownerId], references: [uid])
+
+  order       Int?
+}
+
+model UserInfo {
   uid              String   @id @default(cuid())
   email            String   @unique
   profilePicture   String
@@ -21,6 +63,12 @@ model UserDetails {
   createdAt        DateTime @default(now())
   displayName      String
   role             UserRole
+
+  courses          Course[]        @relation("CourseOwner")
+  subjects         Subject[]       @relation("SubjectOwner")
+  topics           Topic[]         @relation("TopicOwner")
+  subtopics        Subtopic[]      @relation("SubtopicOwner")
+  curriculumRelations CurriculumRelation[]
 }
 
 enum UserRole {
