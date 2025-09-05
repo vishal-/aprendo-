@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth";
 import { useUserDetailsStore } from "@/store/userDetailsStore";
@@ -11,11 +11,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore();
   const { userDetails, setUserDetails } = useUserDetailsStore();
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const hasFetchedRef = useRef<string | null>(null);
 
   // Fetch user details when user is authenticated
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (user && !userDetails && !isLoadingDetails) {
+      if (user && user.uid && !userDetails && !isLoadingDetails && hasFetchedRef.current !== user.uid) {
+        hasFetchedRef.current = user.uid;
         setIsLoadingDetails(true);
         try {
           const token = await user.getIdToken();
@@ -30,6 +32,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           console.error('Error fetching user details:', error);
+          hasFetchedRef.current = null; // Reset on error to allow retry
         } finally {
           setIsLoadingDetails(false);
         }
@@ -37,7 +40,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     };
 
     fetchUserDetails();
-  }, [user, userDetails, setUserDetails, isLoadingDetails]);
+  }, [user, userDetails, isLoadingDetails, setUserDetails]);
 
   useEffect(() => {
     // Public paths that don't require authentication

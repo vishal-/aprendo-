@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth';
+import React from "react";
+import Image from "next/image";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth";
 
 const AuthPage = () => {
   const router = useRouter();
@@ -17,18 +17,20 @@ const AuthPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
-      toast.success('Logged in successfully!');
-      router.push('/student/tests');
+      toast.success("Logged in successfully!");
+      router.push("/user/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error('Something went wrong!');
+      toast.error("Something went wrong!");
     }
   };
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-800">
       <div className="w-full max-w-md p-8 mt-12 border border-gray-600 space-y-6 bg-gray-800 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-center text-light">Login or Sign Up</h1>
+        <h1 className="text-3xl font-bold text-center text-light">
+          Login or Sign Up
+        </h1>
         <div className="space-y-4">
           <button
             onClick={handleGoogleLogin}
