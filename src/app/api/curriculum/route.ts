@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getUidFromToken } from '@/lib/auth';
-
-interface TreeNode {
-  id: string;
-  name: string;
-  children?: TreeNode[];
-  level: number;
-}
+import { TreeNode, CourseData } from '@/types/Curriculum';
 
 export async function POST(request: NextRequest) {
   try {
@@ -134,20 +128,20 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function buildCurriculumHierarchy(courses: any[]): TreeNode[] {
+function buildCurriculumHierarchy(courses: CourseData[]): TreeNode[] {
   return courses.map(course => ({
     id: `course_${course.id}`,
     name: course.name,
     level: 0,
-    children: course.subjects.map((subject: any) => ({
+    children: course.subjects.map((subject) => ({
       id: `subject_${subject.id}`,
       name: subject.name,
       level: 1,
-      children: subject.topics.map((topic: any) => ({
+      children: subject.topics.map((topic) => ({
         id: `topic_${topic.id}`,
         name: topic.name,
         level: 2,
-        children: topic.subtopics.map((subtopic: any) => ({
+        children: topic.subtopics.map((subtopic) => ({
           id: `subtopic_${subtopic.id}`,
           name: subtopic.name,
           level: 3

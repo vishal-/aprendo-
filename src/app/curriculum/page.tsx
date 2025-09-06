@@ -5,13 +5,7 @@ import { useAuthStore } from "@/store/auth";
 import MillerColumns from "@/components/ui/MillerColumns";
 import { Toast } from "@/components/ui/Toast";
 import Button from "@/components/ui/Button";
-
-interface TreeNode {
-  id: string;
-  name: string;
-  children?: TreeNode[];
-  level: number;
-}
+import { TreeNode } from "@/types/Curriculum";
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();

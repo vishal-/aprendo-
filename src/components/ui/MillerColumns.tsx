@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-interface TreeNode {
-  id: string;
-  name: string;
-  children?: TreeNode[];
-  level: number;
-}
+import { TreeNode } from "@/types/Curriculum";
 
 interface MillerColumnsProps {
   data: TreeNode[];
