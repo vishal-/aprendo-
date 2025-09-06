@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth";
 import { auth } from "@/lib/firebase";
+import Button from "../ui/Button";
 
 export default function Header() {
   const { user, loading } = useAuthStore();
@@ -26,12 +27,9 @@ export default function Header() {
                 <span className="text-light">
                   {user.displayName || user.email}
                 </span>
-                <button
-                  onClick={() => auth.signOut()}
-                  className="bg-primary text-dark px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-                >
+                <Button variant="secondary" onClick={() => auth.signOut()}>
                   Logout
-                </button>
+                </Button>
               </>
             ) : (
               <Link
