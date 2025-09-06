@@ -10,7 +10,12 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 export const metadata: Metadata = {
   title: "Aprendo - Practice. Learn. Excel.",
   description:
-    "The ultimate platform for teachers and students to create and take tests."
+    "The ultimate platform for teachers and students to create and take tests.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png"
+  }
 };
 
 export default function RootLayout({

@@ -1,7 +1,8 @@
-'use client';
-import Link from 'next/link';
-import { useAuthStore } from '@/store/auth';
-import { auth } from '@/lib/firebase';
+"use client";
+import Link from "next/link";
+import { useAuthStore } from "@/store/auth";
+import { auth } from "@/lib/firebase";
+import Button from "../ui/Button";
 
 export default function Header() {
   const { user, loading } = useAuthStore();
@@ -11,6 +12,11 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4 md:py-6">
           <Link href="/" className="text-xl md:text-2xl font-bold text-primary">
+            <img
+              src="/aprendo.png"
+              alt="logo"
+              className="inline h-8 w-8 mr-2"
+            />
             Aprendo
           </Link>
           <div className="flex items-center space-x-3 md:space-x-4">
@@ -18,13 +24,24 @@ export default function Header() {
               <div>Loading...</div>
             ) : user ? (
               <>
-                <span className="text-light">{user.displayName || user.email}</span>
-                <button onClick={() => auth.signOut()} className="bg-primary text-dark px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                <Link
+                  href="/user/dashboard"
+                  className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base"
+                >
+                  {user.displayName || user.email}
+                </Link>
+                {/* <span className="text-light">
+                  {user.displayName || user.email}
+                </span> */}
+                <Button variant="secondary" onClick={() => auth.signOut()}>
                   Logout
-                </button>
+                </Button>
               </>
             ) : (
-              <Link href="/auth" className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base">
+              <Link
+                href="/auth"
+                className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base"
+              >
                 Get started
               </Link>
             )}

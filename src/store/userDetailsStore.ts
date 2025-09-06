@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from "zustand/middleware";
 import { UserDetails } from '@/types/userDetails';
 
 interface UserDetailsState {
@@ -6,7 +7,14 @@ interface UserDetailsState {
     setUserDetails: (details: UserDetails | null) => void;
 }
 
-export const useUserDetailsStore = create<UserDetailsState>((set) => ({
-    userDetails: null,
-    setUserDetails: (details) => set({ userDetails: details }),
-}));
+export const useUserDetailsStore = create(
+    persist<UserDetailsState>(
+        (set) => ({
+            userDetails: null,
+            setUserDetails: (details) => set({ userDetails: details }),
+        }),
+        {
+            name: "user-info", // key in localStorage
+        }
+    )
+);

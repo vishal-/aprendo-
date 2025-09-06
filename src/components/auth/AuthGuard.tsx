@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth";
 import { useUserDetailsStore } from "@/store/userDetailsStore";
@@ -8,28 +8,37 @@ import { useUserDetailsStore } from "@/store/userDetailsStore";
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuthStore();
+  const { loading, user } = useAuthStore();
   const { userDetails, setUserDetails } = useUserDetailsStore();
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const hasFetchedRef = useRef<string | null>(null);
 
   // Fetch user details when user is authenticated
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (user && !userDetails && !isLoadingDetails) {
+      if (
+        user &&
+        user.uid &&
+        !userDetails &&
+        !isLoadingDetails &&
+        hasFetchedRef.current !== user.uid
+      ) {
+        hasFetchedRef.current = user.uid;
         setIsLoadingDetails(true);
         try {
           const token = await user.getIdToken();
-          const response = await fetch('/api/user/info', {
+          const response = await fetch("/api/user/info", {
             headers: {
-              'Authorization': `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           });
           if (response.ok) {
             const result = await response.json();
             setUserDetails(result.data);
           }
         } catch (error) {
-          console.error('Error fetching user details:', error);
+          console.error("Error fetching user details:", error);
+          hasFetchedRef.current = null; // Reset on error to allow retry
         } finally {
           setIsLoadingDetails(false);
         }
@@ -37,9 +46,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     };
 
     fetchUserDetails();
-  }, [user, userDetails, setUserDetails, isLoadingDetails]);
+  }, [user, userDetails, isLoadingDetails, setUserDetails]);
 
   useEffect(() => {
+    // Don't redirect while loading auth state or user details
+    if (loading || isLoadingDetails) return;
+
     // Public paths that don't require authentication
     const publicPaths = ["/", "/auth", "/terms", "/privacy", "/about"];
     if (publicPaths.includes(pathname)) {
@@ -67,7 +79,17 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       router.push("/user/details");
       return;
     }
-  }, [user, userDetails, router, pathname, isLoadingDetails]);
+
+    // Redirect to appropriate dashboard based on role
+    if (pathname === "/dashboard") {
+      if (userDetails?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/user/dashboard");
+      }
+      return;
+    }
+  }, [loading, user, userDetails, router, pathname, isLoadingDetails]);
 
   return <>{children}</>;
 }
