@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { TreeNode } from "@/types/Curriculum";
+import Button from "./Button";
+import { FaPlus } from "react-icons/fa6";
 
 interface MillerColumnsProps {
   data: TreeNode[];
@@ -82,11 +84,13 @@ export default function MillerColumns({
   };
 
   return (
-    <div className="flex h-96 border border-gray-600 rounded-lg overflow-hidden bg-gray-800">
+    <div className="flex min-h-[calc(100vh-42rem)] border border-gray-600 rounded-lg overflow-hidden bg-gray-800">
       {columns.map((column, columnIndex) => (
         <div
           key={columnIndex}
-          className="flex-1 min-w-48 border-r border-gray-600 last:border-r-0"
+          className={`${
+            columnIndex === columns.length - 1 ? "flex-1" : "w-64 flex-shrink-0"
+          } border-r border-gray-600 last:border-r-0`}
         >
           <div className="h-full flex flex-col">
             <div className="p-3 bg-gray-700 border-b border-gray-600">
@@ -120,7 +124,7 @@ export default function MillerColumns({
               ))}
             </div>
             <div className="p-3 bg-gray-700 border-t border-gray-600">
-              <div className="flex gap-2">
+              <div className="flex gap-2 min-w-0">
                 <input
                   type="text"
                   value={inputValues[columnIndex] || ""}
@@ -137,16 +141,15 @@ export default function MillerColumns({
                       ? "topic"
                       : "subtopic"
                   }...`}
-                  className="flex-1 text-sm px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="flex-1 min-w-0 text-sm px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
-                <button
+                <Button
                   onClick={() => handleAddClick(columnIndex)}
                   disabled={!inputValues[columnIndex]?.trim()}
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                  variant="info"
                 >
-                  <span className="text-lg">+</span>
-                  <span className="text-sm">Add</span>
-                </button>
+                  <FaPlus />
+                </Button>
               </div>
             </div>
           </div>
