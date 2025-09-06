@@ -9,10 +9,14 @@ interface MillerColumnsProps {
   onAddNode?: (parentPath: TreeNode[], level: number, name: string) => void;
 }
 
-export default function MillerColumns({ data, onSelectionChange, onAddNode }: MillerColumnsProps) {
+export default function MillerColumns({
+  data,
+  onSelectionChange,
+  onAddNode
+}: MillerColumnsProps) {
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [columns, setColumns] = useState<TreeNode[][]>([data]);
-  const [inputValues, setInputValues] = useState<string[]>(['', '', '', '']);
+  const [inputValues, setInputValues] = useState<string[]>(["", "", "", ""]);
 
   // Update columns when data changes - preserve current state
   useEffect(() => {
@@ -24,44 +28,44 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
     // Rebuild columns based on current selectedPath and new data
     const newColumns = [data];
     let currentNodes = data;
-    
+
     for (let i = 0; i < selectedPath.length; i++) {
-      const selectedNode = currentNodes.find(node => node.id === selectedPath[i].id);
+      const selectedNode = currentNodes.find(
+        (node) => node.id === selectedPath[i].id
+      );
       if (selectedNode && selectedNode.level < 3) {
         currentNodes = selectedNode.children || [];
         newColumns.push(currentNodes);
       }
     }
-    
+
     setColumns(newColumns);
   }, [data, selectedPath]);
-
-
 
   const handleNodeSelect = (node: TreeNode, columnIndex: number) => {
     const newPath = selectedPath.slice(0, columnIndex).concat(node);
     setSelectedPath(newPath);
-    
+
     // Update columns - always show next level if not at max depth
     const newColumns = columns.slice(0, columnIndex + 1);
     if (node.level < 3) {
       newColumns.push(node.children || []);
     }
     setColumns(newColumns);
-    
+
     onSelectionChange?.(newPath);
   };
 
   const handleAddClick = (columnIndex: number) => {
     const inputValue = inputValues[columnIndex]?.trim();
     if (!inputValue) return;
-    
+
     const parentPath = selectedPath.slice(0, columnIndex);
     onAddNode?.(parentPath, columnIndex, inputValue);
-    
+
     // Clear input after adding
     const newInputValues = [...inputValues];
-    newInputValues[columnIndex] = '';
+    newInputValues[columnIndex] = "";
     setInputValues(newInputValues);
   };
 
@@ -72,7 +76,7 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
   };
 
   const handleKeyPress = (e: React.KeyboardEvent, columnIndex: number) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleAddClick(columnIndex);
     }
   };
@@ -100,12 +104,12 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
                   onClick={() => handleNodeSelect(node, columnIndex)}
                   className={`p-3 cursor-pointer border-b border-gray-600 hover:bg-gray-700 transition-colors ${
                     selectedPath[columnIndex]?.id === node.id
-                      ? "bg-primary/20 border-l-4 border-l-primary"
-                      : ""
+                      ? "bg-primary/20 text-yellow-300 border-l-4 border-l-primary"
+                      : "text-gray-200"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-200">{node.name}</span>
+                    <span className="text-sm">{node.name}</span>
                     {node.children && node.children.length > 0 && (
                       <span className="text-xs text-gray-400 bg-gray-600 px-2 py-1 rounded-full">
                         {node.children.length}
@@ -119,10 +123,20 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
               <div className="flex gap-2">
                 <input
                   type="text"
-                  value={inputValues[columnIndex] || ''}
-                  onChange={(e) => handleInputChange(columnIndex, e.target.value)}
+                  value={inputValues[columnIndex] || ""}
+                  onChange={(e) =>
+                    handleInputChange(columnIndex, e.target.value)
+                  }
                   onKeyPress={(e) => handleKeyPress(e, columnIndex)}
-                  placeholder={`Add ${columnIndex === 0 ? 'course' : columnIndex === 1 ? 'subject' : columnIndex === 2 ? 'topic' : 'subtopic'}...`}
+                  placeholder={`Add ${
+                    columnIndex === 0
+                      ? "course"
+                      : columnIndex === 1
+                      ? "subject"
+                      : columnIndex === 2
+                      ? "topic"
+                      : "subtopic"
+                  }...`}
                   className="flex-1 text-sm px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
                 <button
