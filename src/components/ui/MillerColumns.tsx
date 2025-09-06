@@ -12,12 +12,13 @@ interface TreeNode {
 interface MillerColumnsProps {
   data: TreeNode[];
   onSelectionChange?: (path: TreeNode[]) => void;
-  onAddNode?: (parentPath: TreeNode[], level: number) => void;
+  onAddNode?: (parentPath: TreeNode[], level: number, name: string) => void;
 }
 
 export default function MillerColumns({ data, onSelectionChange, onAddNode }: MillerColumnsProps) {
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [columns, setColumns] = useState<TreeNode[][]>([data]);
+  const [inputValues, setInputValues] = useState<string[]>(['', '', '', '']);
 
   const handleNodeSelect = (node: TreeNode, columnIndex: number) => {
     const newPath = selectedPath.slice(0, columnIndex).concat(node);
@@ -34,53 +35,87 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
   };
 
   const handleAddClick = (columnIndex: number) => {
+    const inputValue = inputValues[columnIndex]?.trim();
+    if (!inputValue) return;
+    
     const parentPath = selectedPath.slice(0, columnIndex);
-    onAddNode?.(parentPath, columnIndex);
+    onAddNode?.(parentPath, columnIndex, inputValue);
+    
+    // Clear input after adding
+    const newInputValues = [...inputValues];
+    newInputValues[columnIndex] = '';
+    setInputValues(newInputValues);
+  };
+
+  const handleInputChange = (columnIndex: number, value: string) => {
+    const newInputValues = [...inputValues];
+    newInputValues[columnIndex] = value;
+    setInputValues(newInputValues);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent, columnIndex: number) => {
+    if (e.key === 'Enter') {
+      handleAddClick(columnIndex);
+    }
   };
 
   return (
-    <div className="flex h-96 border border-gray-300 rounded-lg overflow-hidden bg-white">
+    <div className="flex h-96 border border-gray-600 rounded-lg overflow-hidden bg-gray-800">
       {columns.map((column, columnIndex) => (
         <div
           key={columnIndex}
-          className="flex-1 min-w-48 border-r border-gray-200 last:border-r-0"
+          className="flex-1 min-w-48 border-r border-gray-600 last:border-r-0"
         >
           <div className="h-full flex flex-col">
-            <div className="p-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-              <span className="text-sm font-medium text-gray-700">
+            <div className="p-3 bg-gray-700 border-b border-gray-600">
+              <span className="text-sm font-medium text-gray-200">
                 {columnIndex === 0 && "Courses"}
                 {columnIndex === 1 && "Subjects"}
                 {columnIndex === 2 && "Topics"}
                 {columnIndex === 3 && "Subtopics"}
               </span>
-              <button
-                onClick={() => handleAddClick(columnIndex)}
-                className="text-xs bg-primary text-white px-2 py-1 rounded hover:bg-secondary"
-              >
-                + Add
-              </button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {column.map((node) => (
                 <div
                   key={node.id}
                   onClick={() => handleNodeSelect(node, columnIndex)}
-                  className={`p-3 cursor-pointer border-b border-gray-100 hover:bg-blue-50 ${
+                  className={`p-3 cursor-pointer border-b border-gray-600 hover:bg-gray-700 transition-colors ${
                     selectedPath[columnIndex]?.id === node.id
-                      ? "bg-blue-100 border-l-4 border-l-blue-500"
+                      ? "bg-primary/20 border-l-4 border-l-primary"
                       : ""
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-900">{node.name}</span>
+                    <span className="text-sm text-gray-200">{node.name}</span>
                     {node.children && node.children.length > 0 && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-400 bg-gray-600 px-2 py-1 rounded-full">
                         {node.children.length}
                       </span>
                     )}
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="p-3 bg-gray-700 border-t border-gray-600">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={inputValues[columnIndex] || ''}
+                  onChange={(e) => handleInputChange(columnIndex, e.target.value)}
+                  onKeyPress={(e) => handleKeyPress(e, columnIndex)}
+                  placeholder={`Add ${columnIndex === 0 ? 'course' : columnIndex === 1 ? 'subject' : columnIndex === 2 ? 'topic' : 'subtopic'}...`}
+                  className="flex-1 text-sm px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+                <button
+                  onClick={() => handleAddClick(columnIndex)}
+                  disabled={!inputValues[columnIndex]?.trim()}
+                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                >
+                  <span className="text-lg">+</span>
+                  <span className="text-sm">Add</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

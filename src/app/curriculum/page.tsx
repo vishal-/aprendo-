@@ -82,31 +82,24 @@ const initialData: TreeNode[] = [
 export default function CurriculumPage() {
   const [data, setData] = useState<TreeNode[]>(initialData);
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [addFormData, setAddFormData] = useState({
-    name: "",
-    parentPath: [] as TreeNode[],
-    level: 0
-  });
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSelectionChange = (path: TreeNode[]) => {
     setSelectedPath(path);
   };
 
-  const handleAddNode = (parentPath: TreeNode[], level: number) => {
-    setAddFormData({ name: "", parentPath, level });
-    setShowAddForm(true);
-  };
-
-  const handleSubmitAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!addFormData.name.trim()) return;
+  const handleAddNode = (
+    parentPath: TreeNode[],
+    level: number,
+    name: string
+  ) => {
+    if (!name.trim()) return;
 
     const newNode: TreeNode = {
-      id: `${addFormData.name.toLowerCase().replace(/\s+/g, "")}_${Date.now()}`,
-      name: addFormData.name,
-      level: addFormData.level,
-      children: addFormData.level < 3 ? [] : undefined
+      id: `${name.toLowerCase().replace(/\s+/g, "")}_${Date.now()}`,
+      name: name.trim(),
+      level: level,
+      children: level < 3 ? [] : undefined
     };
 
     const updateData = (
@@ -133,27 +126,104 @@ export default function CurriculumPage() {
       });
     };
 
-    setData(updateData(data, addFormData.parentPath, addFormData.level));
-    setShowAddForm(false);
-    setAddFormData({ name: "", parentPath: [], level: 0 });
+    setData(updateData(data, parentPath, level));
     Toast.success("Item added successfully!");
   };
 
-  const getLevelName = (level: number) => {
-    const names = ["Course", "Subject", "Topic", "Subtopic"];
-    return names[level] || "Item";
+  //   const handleSubmitAdd = (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     if (!addFormData.name.trim()) return;
+
+  //     const newNode: TreeNode = {
+  //       id: `${addFormData.name.toLowerCase().replace(/\s+/g, "")}_${Date.now()}`,
+  //       name: addFormData.name,
+  //       level: addFormData.level,
+  //       children: addFormData.level < 3 ? [] : undefined
+  //     };
+
+  //     const updateData = (
+  //       nodes: TreeNode[],
+  //       path: TreeNode[],
+  //       targetLevel: number
+  //     ): TreeNode[] => {
+  //       if (targetLevel === 0) {
+  //         return [...nodes, newNode];
+  //       }
+
+  //       return nodes.map((node) => {
+  //         if (path.length > 0 && node.id === path[0].id) {
+  //           return {
+  //             ...node,
+  //             children: updateData(
+  //               node.children || [],
+  //               path.slice(1),
+  //               targetLevel - 1
+  //             )
+  //           };
+  //         }
+  //         return node;
+  //       });
+  //     };
+
+  //     setData(updateData(data, addFormData.parentPath, addFormData.level));
+  //     setShowAddForm(false);
+  //     setAddFormData({ name: "", parentPath: [], level: 0 });
+  //     Toast.success("Item added successfully!");
+  //   };
+
+  const handleSaveCurriculum = async () => {
+    setIsSaving(true);
+    try {
+      const response = await fetch("/api/curriculum", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ curriculum: data })
+      });
+
+      if (response.ok) {
+        Toast.success("Curriculum saved successfully!");
+      } else {
+        Toast.danger("Failed to save curriculum. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error saving curriculum:", error);
+      Toast.danger("An error occurred while saving. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Curriculum Management
-        </h1>
-        <p className="text-gray-300">
-          Navigate through the curriculum hierarchy using the column view.
-          Select items to explore deeper levels.
-        </p>
+      <div className="mb-8 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Curriculum Management
+          </h1>
+          <p className="text-gray-300">
+            Navigate through the curriculum hierarchy. Add items using the input
+            fields at the bottom of each column.
+          </p>
+        </div>
+        <button
+          onClick={handleSaveCurriculum}
+          disabled={isSaving}
+          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+        >
+          {isSaving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Saving...
+            </>
+          ) : (
+            <>
+              <span>💾</span>
+              Save Curriculum
+            </>
+          )}
+        </button>
       </div>
 
       {/* Selected Path Breadcrumb */}
@@ -183,59 +253,6 @@ export default function CurriculumPage() {
           onAddNode={handleAddNode}
         />
       </div>
-
-      {/* Add Form Modal */}
-      {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Add New {getLevelName(addFormData.level)}
-            </h3>
-            <form onSubmit={handleSubmitAdd}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {getLevelName(addFormData.level)} Name
-                </label>
-                <input
-                  type="text"
-                  value={addFormData.name}
-                  onChange={(e) =>
-                    setAddFormData({ ...addFormData, name: e.target.value })
-                  }
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary text-gray-900"
-                  placeholder={`Enter ${getLevelName(
-                    addFormData.level
-                  ).toLowerCase()} name`}
-                  required
-                />
-              </div>
-              {addFormData.parentPath.length > 0 && (
-                <div className="mb-4 p-3 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">
-                    Adding to:{" "}
-                    {addFormData.parentPath.map((p) => p.name).join(" → ")}
-                  </p>
-                </div>
-              )}
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary"
-                >
-                  Add {getLevelName(addFormData.level)}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
