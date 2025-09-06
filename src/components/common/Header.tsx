@@ -24,9 +24,15 @@ export default function Header() {
               <div>Loading...</div>
             ) : user ? (
               <>
-                <span className="text-light">
+                <Link
+                  href="/user/dashboard"
+                  className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base"
+                >
                   {user.displayName || user.email}
-                </span>
+                </Link>
+                {/* <span className="text-light">
+                  {user.displayName || user.email}
+                </span> */}
                 <Button variant="secondary" onClick={() => auth.signOut()}>
                   Logout
                 </Button>

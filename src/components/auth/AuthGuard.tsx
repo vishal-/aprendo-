@@ -16,22 +16,28 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // Fetch user details when user is authenticated
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (user && user.uid && !userDetails && !isLoadingDetails && hasFetchedRef.current !== user.uid) {
+      if (
+        user &&
+        user.uid &&
+        !userDetails &&
+        !isLoadingDetails &&
+        hasFetchedRef.current !== user.uid
+      ) {
         hasFetchedRef.current = user.uid;
         setIsLoadingDetails(true);
         try {
           const token = await user.getIdToken();
-          const response = await fetch('/api/user/info', {
+          const response = await fetch("/api/user/info", {
             headers: {
-              'Authorization': `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           });
           if (response.ok) {
             const result = await response.json();
             setUserDetails(result.data);
           }
         } catch (error) {
-          console.error('Error fetching user details:', error);
+          console.error("Error fetching user details:", error);
           hasFetchedRef.current = null; // Reset on error to allow retry
         } finally {
           setIsLoadingDetails(false);
