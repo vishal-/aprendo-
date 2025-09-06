@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const userDetails = await prisma.userDetails.findUnique({
+    const userDetails = await prisma.userInfo.findUnique({
       where: { uid },
     });
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userDetails = await prisma.userDetails.upsert({
+    const userDetails = await prisma.userInfo.upsert({
       where: { uid: uid },
       update: {
         displayName,
