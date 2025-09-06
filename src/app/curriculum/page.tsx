@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/auth";
 import MillerColumns from "@/components/ui/MillerColumns";
 import { Toast } from "@/components/ui/Toast";
 
@@ -80,9 +81,40 @@ const initialData: TreeNode[] = [
 ];
 
 export default function CurriculumPage() {
+  const { user } = useAuthStore();
   const [data, setData] = useState<TreeNode[]>(initialData);
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load existing curriculum on mount
+  useEffect(() => {
+    const loadCurriculum = async () => {
+      if (!user) return;
+      
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch('/api/curriculum', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result.data && result.data.length > 0) {
+            setData(result.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading curriculum:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCurriculum();
+  }, [user]);
 
   const handleSelectionChange = (path: TreeNode[]) => {
     setSelectedPath(path);
@@ -172,12 +204,16 @@ export default function CurriculumPage() {
   //   };
 
   const handleSaveCurriculum = async () => {
+    if (!user) return;
+    
     setIsSaving(true);
     try {
+      const token = await user.getIdToken();
       const response = await fetch("/api/curriculum", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({ curriculum: data })
       });
@@ -247,11 +283,20 @@ export default function CurriculumPage() {
 
       {/* Miller Columns */}
       <div className="mb-8">
-        <MillerColumns
-          data={data}
-          onSelectionChange={handleSelectionChange}
-          onAddNode={handleAddNode}
-        />
+        {isLoading ? (
+          <div className="flex items-center justify-center h-96 bg-gray-800 rounded-lg">
+            <div className="text-center">
+              <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-300">Loading curriculum...</p>
+            </div>
+          </div>
+        ) : (
+          <MillerColumns
+            data={data}
+            onSelectionChange={handleSelectionChange}
+            onAddNode={handleAddNode}
+          />
+        )}
       </div>
     </div>
   );
