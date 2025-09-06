@@ -8,7 +8,7 @@ import { useUserDetailsStore } from "@/store/userDetailsStore";
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuthStore();
+  const { loading, user } = useAuthStore();
   const { userDetails, setUserDetails } = useUserDetailsStore();
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const hasFetchedRef = useRef<string | null>(null);
@@ -49,6 +49,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [user, userDetails, isLoadingDetails, setUserDetails]);
 
   useEffect(() => {
+    // Don't redirect while loading auth state or user details
+    if (loading || isLoadingDetails) return;
+
     // Public paths that don't require authentication
     const publicPaths = ["/", "/auth", "/terms", "/privacy", "/about"];
     if (publicPaths.includes(pathname)) {
@@ -86,7 +89,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       }
       return;
     }
-  }, [user, userDetails, router, pathname, isLoadingDetails]);
+  }, [loading, user, userDetails, router, pathname, isLoadingDetails]);
 
   return <>{children}</>;
 }
