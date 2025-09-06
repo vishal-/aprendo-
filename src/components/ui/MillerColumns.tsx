@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface TreeNode {
   id: string;
@@ -20,14 +20,41 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
   const [columns, setColumns] = useState<TreeNode[][]>([data]);
   const [inputValues, setInputValues] = useState<string[]>(['', '', '', '']);
 
+  // Update columns when data changes
+  useEffect(() => {
+    setColumns([data]);
+    setSelectedPath([]);
+  }, [data]);
+
+  // Update columns when selectedPath changes to maintain proper column display
+  useEffect(() => {
+    if (selectedPath.length === 0) {
+      setColumns([data]);
+      return;
+    }
+
+    const newColumns = [data];
+    let currentNodes = data;
+    
+    for (let i = 0; i < selectedPath.length; i++) {
+      const selectedNode = currentNodes.find(node => node.id === selectedPath[i].id);
+      if (selectedNode && selectedNode.level < 3) {
+        currentNodes = selectedNode.children || [];
+        newColumns.push(currentNodes);
+      }
+    }
+    
+    setColumns(newColumns);
+  }, [selectedPath, data]);
+
   const handleNodeSelect = (node: TreeNode, columnIndex: number) => {
     const newPath = selectedPath.slice(0, columnIndex).concat(node);
     setSelectedPath(newPath);
     
-    // Update columns
+    // Update columns - always show next level if not at max depth
     const newColumns = columns.slice(0, columnIndex + 1);
-    if (node.children && node.children.length > 0) {
-      newColumns.push(node.children);
+    if (node.level < 3) {
+      newColumns.push(node.children || []);
     }
     setColumns(newColumns);
     

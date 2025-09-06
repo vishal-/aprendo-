@@ -90,7 +90,6 @@ export default function CurriculumPage() {
     };
 
     setData(updateData(data, parentPath, level));
-    Toast.success("Item added successfully!");
   };
 
   const handleSaveCurriculum = async () => {
