@@ -12,77 +12,11 @@ interface TreeNode {
   level: number;
 }
 
-// Sample hierarchical data
-const initialData: TreeNode[] = [
-  {
-    id: "grade1",
-    name: "Grade 1",
-    level: 0,
-    children: [
-      {
-        id: "math1",
-        name: "Mathematics",
-        level: 1,
-        children: [
-          {
-            id: "operations1",
-            name: "Operations",
-            level: 2,
-            children: [
-              { id: "addition1", name: "Addition", level: 3 },
-              { id: "subtraction1", name: "Subtraction", level: 3 }
-            ]
-          },
-          {
-            id: "geometry1",
-            name: "Geometry",
-            level: 2,
-            children: [{ id: "shapes1", name: "Basic Shapes", level: 3 }]
-          }
-        ]
-      },
-      {
-        id: "science1",
-        name: "Science",
-        level: 1,
-        children: [
-          {
-            id: "biology1",
-            name: "Biology",
-            level: 2,
-            children: [{ id: "plants1", name: "Plants", level: 3 }]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "grade2",
-    name: "Grade 2",
-    level: 0,
-    children: [
-      {
-        id: "math2",
-        name: "Mathematics",
-        level: 1,
-        children: [
-          {
-            id: "operations2",
-            name: "Operations",
-            level: 2,
-            children: [
-              { id: "multiplication2", name: "Multiplication", level: 3 }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-];
+
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
-  const [data, setData] = useState<TreeNode[]>(initialData);
+  const [data, setData] = useState<TreeNode[]>([]);
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -91,23 +25,21 @@ export default function CurriculumPage() {
   useEffect(() => {
     const loadCurriculum = async () => {
       if (!user) return;
-      
+
       try {
         const token = await user.getIdToken();
-        const response = await fetch('/api/curriculum', {
+        const response = await fetch("/api/curriculum", {
           headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
-        
+
         if (response.ok) {
           const result = await response.json();
-          if (result.data && result.data.length > 0) {
-            setData(result.data);
-          }
+          setData(result.data || []);
         }
       } catch (error) {
-        console.error('Error loading curriculum:', error);
+        console.error("Error loading curriculum:", error);
       } finally {
         setIsLoading(false);
       }
@@ -162,50 +94,9 @@ export default function CurriculumPage() {
     Toast.success("Item added successfully!");
   };
 
-  //   const handleSubmitAdd = (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     if (!addFormData.name.trim()) return;
-
-  //     const newNode: TreeNode = {
-  //       id: `${addFormData.name.toLowerCase().replace(/\s+/g, "")}_${Date.now()}`,
-  //       name: addFormData.name,
-  //       level: addFormData.level,
-  //       children: addFormData.level < 3 ? [] : undefined
-  //     };
-
-  //     const updateData = (
-  //       nodes: TreeNode[],
-  //       path: TreeNode[],
-  //       targetLevel: number
-  //     ): TreeNode[] => {
-  //       if (targetLevel === 0) {
-  //         return [...nodes, newNode];
-  //       }
-
-  //       return nodes.map((node) => {
-  //         if (path.length > 0 && node.id === path[0].id) {
-  //           return {
-  //             ...node,
-  //             children: updateData(
-  //               node.children || [],
-  //               path.slice(1),
-  //               targetLevel - 1
-  //             )
-  //           };
-  //         }
-  //         return node;
-  //       });
-  //     };
-
-  //     setData(updateData(data, addFormData.parentPath, addFormData.level));
-  //     setShowAddForm(false);
-  //     setAddFormData({ name: "", parentPath: [], level: 0 });
-  //     Toast.success("Item added successfully!");
-  //   };
-
   const handleSaveCurriculum = async () => {
     if (!user) return;
-    
+
     setIsSaving(true);
     try {
       const token = await user.getIdToken();
@@ -213,7 +104,7 @@ export default function CurriculumPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ curriculum: data })
       });
