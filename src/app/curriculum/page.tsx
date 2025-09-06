@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/auth";
 import MillerColumns from "@/components/ui/MillerColumns";
 import { Toast } from "@/components/ui/Toast";
+import Button from "@/components/ui/Button";
 
 interface TreeNode {
   id: string;
@@ -11,8 +12,6 @@ interface TreeNode {
   children?: TreeNode[];
   level: number;
 }
-
-
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
@@ -134,10 +133,10 @@ export default function CurriculumPage() {
             fields at the bottom of each column.
           </p>
         </div>
-        <button
+        <Button
           onClick={handleSaveCurriculum}
           disabled={isSaving}
-          className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+          variant="info"
         >
           {isSaving ? (
             <>
@@ -145,12 +144,9 @@ export default function CurriculumPage() {
               Saving...
             </>
           ) : (
-            <>
-              <span>💾</span>
-              Save Curriculum
-            </>
+            <>Save Curriculum</>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Selected Path Breadcrumb */}
