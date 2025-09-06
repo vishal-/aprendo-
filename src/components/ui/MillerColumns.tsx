@@ -14,19 +14,14 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
   const [columns, setColumns] = useState<TreeNode[][]>([data]);
   const [inputValues, setInputValues] = useState<string[]>(['', '', '', '']);
 
-  // Update columns when data changes
-  useEffect(() => {
-    setColumns([data]);
-    setSelectedPath([]);
-  }, [data]);
-
-  // Update columns when selectedPath changes to maintain proper column display
+  // Update columns when data changes - preserve current state
   useEffect(() => {
     if (selectedPath.length === 0) {
       setColumns([data]);
       return;
     }
 
+    // Rebuild columns based on current selectedPath and new data
     const newColumns = [data];
     let currentNodes = data;
     
@@ -39,7 +34,9 @@ export default function MillerColumns({ data, onSelectionChange, onAddNode }: Mi
     }
     
     setColumns(newColumns);
-  }, [selectedPath, data]);
+  }, [data, selectedPath]);
+
+
 
   const handleNodeSelect = (node: TreeNode, columnIndex: number) => {
     const newPath = selectedPath.slice(0, columnIndex).concat(node);
