@@ -3,6 +3,7 @@
 import { useUserDetailsStore } from "@/store/userDetailsStore";
 import { useAuthStore } from "@/store/auth";
 import Link from "next/link";
+import { PATHS } from "@/config/paths";
 
 export default function UserDashboard() {
   const { user } = useAuthStore();
@@ -15,7 +16,7 @@ export default function UserDashboard() {
       {
         title: "Profile",
         description: "Manage your profile settings",
-        href: "/user/details",
+        href: PATHS.userDetails,
         icon: "👤"
       }
     ];
@@ -27,19 +28,19 @@ export default function UserDashboard() {
           {
             title: "Create Test",
             description: "Create a new test for your students",
-            href: "/teacher/tests/new",
+            href: PATHS.teacherTestNew,
             icon: "📝"
           },
           {
             title: "My Tests",
             description: "View and manage your created tests",
-            href: "/teacher/tests",
+            href: PATHS.teacherTests,
             icon: "📋"
           },
           {
             title: "Assign Tests",
             description: "Assign tests to students",
-            href: "/teacher/assign",
+            href: PATHS.teacherTestAssign,
             icon: "📤"
           }
         ];
@@ -50,13 +51,13 @@ export default function UserDashboard() {
           {
             title: "Upcoming Tests",
             description: "View your assigned tests",
-            href: "/student/tests",
+            href: PATHS.studentTests,
             icon: "📅"
           },
           {
             title: "Test Results",
             description: "View your test results and progress",
-            href: "/student/results",
+            href: PATHS.studentResults,
             icon: "📊"
           }
         ];
@@ -67,7 +68,7 @@ export default function UserDashboard() {
           {
             title: "Child Progress",
             description: "Monitor your child's test performance",
-            href: "/parent/progress",
+            href: PATHS.parentProgress,
             icon: "👶"
           }
         ];
@@ -78,13 +79,13 @@ export default function UserDashboard() {
           {
             title: "Manage Students",
             description: "View and manage academy students",
-            href: "/academy/students",
+            href: PATHS.academyStudents,
             icon: "🎓"
           },
           {
             title: "Academy Tests",
             description: "Manage academy-wide tests",
-            href: "/academy/tests",
+            href: PATHS.academyTests,
             icon: "🏫"
           }
         ];
