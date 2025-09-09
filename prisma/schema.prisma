@@ -54,6 +54,14 @@ model Subtopic {
   @@unique([name, topicId]) // Ensures unique Subtopic names within a Topic
 }
 
+model ProblemType {
+  id          Int    @id @default(autoincrement())
+  code        String @unique
+  title       String
+  description String?
+  offlineOnly Boolean
+}
+
 model UserInfo {
   uid              String   @id @default(cuid())
   email            String   @unique
