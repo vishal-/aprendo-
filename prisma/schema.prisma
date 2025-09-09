@@ -28,6 +28,7 @@ model Subject {
   owner     UserInfo @relation("SubjectOwner", fields: [ownerId], references: [uid])
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   topics    Topic[]
+  @@unique([name, courseId])
 }
 
 model Topic {
