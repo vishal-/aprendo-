@@ -17,6 +17,7 @@ CREATE TABLE "public"."Subject" (
     "name" TEXT NOT NULL,
     "isBase" BOOLEAN NOT NULL,
     "ownerId" TEXT NOT NULL,
+    "courseId" INTEGER NOT NULL,
 
     CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
 );
@@ -27,6 +28,7 @@ CREATE TABLE "public"."Topic" (
     "name" TEXT NOT NULL,
     "isBase" BOOLEAN NOT NULL,
     "ownerId" TEXT NOT NULL,
+    "subjectId" INTEGER NOT NULL,
 
     CONSTRAINT "Topic_pkey" PRIMARY KEY ("id")
 );
@@ -37,21 +39,9 @@ CREATE TABLE "public"."Subtopic" (
     "name" TEXT NOT NULL,
     "isBase" BOOLEAN NOT NULL,
     "ownerId" TEXT NOT NULL,
+    "topicId" INTEGER NOT NULL,
 
     CONSTRAINT "Subtopic_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."CurriculumRelation" (
-    "id" SERIAL NOT NULL,
-    "courseId" INTEGER,
-    "subjectId" INTEGER,
-    "topicId" INTEGER,
-    "subtopicId" INTEGER,
-    "ownerId" TEXT,
-    "order" INTEGER,
-
-    CONSTRAINT "CurriculumRelation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -80,22 +70,16 @@ ALTER TABLE "public"."Course" ADD CONSTRAINT "Course_ownerId_fkey" FOREIGN KEY (
 ALTER TABLE "public"."Subject" ADD CONSTRAINT "Subject_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."UserInfo"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."Subject" ADD CONSTRAINT "Subject_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "public"."Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."Topic" ADD CONSTRAINT "Topic_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."UserInfo"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Topic" ADD CONSTRAINT "Topic_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "public"."Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Subtopic" ADD CONSTRAINT "Subtopic_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."UserInfo"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."CurriculumRelation" ADD CONSTRAINT "CurriculumRelation_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "public"."Course"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."CurriculumRelation" ADD CONSTRAINT "CurriculumRelation_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "public"."Subject"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."CurriculumRelation" ADD CONSTRAINT "CurriculumRelation_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "public"."Topic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."CurriculumRelation" ADD CONSTRAINT "CurriculumRelation_subtopicId_fkey" FOREIGN KEY ("subtopicId") REFERENCES "public"."Subtopic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."CurriculumRelation" ADD CONSTRAINT "CurriculumRelation_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."UserInfo"("uid") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."Subtopic" ADD CONSTRAINT "Subtopic_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "public"."Topic"("id") ON DELETE CASCADE ON UPDATE CASCADE;

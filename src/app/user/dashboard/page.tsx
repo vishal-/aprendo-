@@ -9,93 +9,20 @@ export default function UserDashboard() {
   const { user } = useAuthStore();
   const { userDetails } = useUserDetailsStore();
 
-  const getWidgetsByRole = () => {
-    const role = userDetails?.role;
-
-    const commonWidgets = [
-      {
-        title: "Profile",
-        description: "Manage your profile settings",
-        href: PATHS.userDetails,
-        icon: "👤"
-      }
-    ];
-
-    switch (role) {
-      case "tutor":
-        return [
-          ...commonWidgets,
-          {
-            title: "Create Test",
-            description: "Create a new test for your students",
-            href: PATHS.teacherTestNew,
-            icon: "📝"
-          },
-          {
-            title: "My Tests",
-            description: "View and manage your created tests",
-            href: PATHS.teacherTests,
-            icon: "📋"
-          },
-          {
-            title: "Assign Tests",
-            description: "Assign tests to students",
-            href: PATHS.teacherTestAssign,
-            icon: "📤"
-          }
-        ];
-
-      case "student":
-        return [
-          ...commonWidgets,
-          {
-            title: "Upcoming Tests",
-            description: "View your assigned tests",
-            href: PATHS.studentTests,
-            icon: "📅"
-          },
-          {
-            title: "Test Results",
-            description: "View your test results and progress",
-            href: PATHS.studentResults,
-            icon: "📊"
-          }
-        ];
-
-      case "parent":
-        return [
-          ...commonWidgets,
-          {
-            title: "Child Progress",
-            description: "Monitor your child's test performance",
-            href: PATHS.parentProgress,
-            icon: "👶"
-          }
-        ];
-
-      case "academy":
-        return [
-          ...commonWidgets,
-          {
-            title: "Manage Students",
-            description: "View and manage academy students",
-            href: PATHS.academyStudents,
-            icon: "🎓"
-          },
-          {
-            title: "Academy Tests",
-            description: "Manage academy-wide tests",
-            href: PATHS.academyTests,
-            icon: "🏫"
-          }
-        ];
-
-      default:
-        return commonWidgets;
+  const widgets = [
+    {
+      title: "Profile",
+      description: "Manage your profile settings",
+      href: PATHS.userDetails,
+      icon: "👤"
+    },
+    {
+      title: "Curriculum",
+      description: "View and manage curriculum content",
+      href: PATHS.curriculum,
+      icon: "�"
     }
-  };
-
-  const widgets = getWidgetsByRole();
+  ];
 
   return (
     <div className="flex flex-col p-12 min-h-screen bg-gray-800">
