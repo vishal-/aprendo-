@@ -12,7 +12,7 @@ datasource db {
 
 model Course {
   id        Int      @id @default(autoincrement())
-  name      String   // e.g. "Grade 1", "Grade 5"
+  name      String   @unique // Unique constraint added for Course name
   isBase    Boolean
   ownerId   String
   owner     UserInfo @relation("CourseOwner", fields: [ownerId], references: [uid])
@@ -21,35 +21,37 @@ model Course {
 
 model Subject {
   id        Int      @id @default(autoincrement())
-  name      String   // e.g. "Mathematics", "Science"
+  name      String
   isBase    Boolean
   ownerId   String
   courseId  Int
   owner     UserInfo @relation("SubjectOwner", fields: [ownerId], references: [uid])
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   topics    Topic[]
-  @@unique([name, courseId])
+  @@unique([name, courseId]) // Ensures unique Subject names within a Course
 }
 
 model Topic {
   id        Int      @id @default(autoincrement())
-  name      String   // e.g. "Operations", "Geometry"
+  name      String
   isBase    Boolean
   ownerId   String
   subjectId Int
   owner     UserInfo @relation("TopicOwner", fields: [ownerId], references: [uid])
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subtopics Subtopic[]
+  @@unique([name, subjectId]) // Ensures unique Topic names within a Subject
 }
 
 model Subtopic {
   id        Int      @id @default(autoincrement())
-  name      String   // e.g. "Addition", "Subtraction"
+  name      String
   isBase    Boolean
   ownerId   String
   topicId   Int
   owner     UserInfo @relation("SubtopicOwner", fields: [ownerId], references: [uid])
   topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  @@unique([name, topicId]) // Ensures unique Subtopic names within a Topic
 }
 
 model UserInfo {
