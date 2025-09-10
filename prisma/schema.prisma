@@ -17,6 +17,7 @@ model Course {
   ownerId   String
   owner     UserInfo @relation("CourseOwner", fields: [ownerId], references: [uid])
   subjects  Subject[]
+  problems  Problem[]
 }
 
 model Subject {
@@ -28,6 +29,7 @@ model Subject {
   owner     UserInfo @relation("SubjectOwner", fields: [ownerId], references: [uid])
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   topics    Topic[]
+  problems  Problem[]
   @@unique([name, courseId]) // Ensures unique Subject names within a Course
 }
 
@@ -40,6 +42,7 @@ model Topic {
   owner     UserInfo @relation("TopicOwner", fields: [ownerId], references: [uid])
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subtopics Subtopic[]
+  problems  Problem[]
   @@unique([name, subjectId]) // Ensures unique Topic names within a Subject
 }
 
@@ -51,6 +54,7 @@ model Subtopic {
   topicId   Int
   owner     UserInfo @relation("SubtopicOwner", fields: [ownerId], references: [uid])
   topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  problems  Problem[]
   @@unique([name, topicId]) // Ensures unique Subtopic names within a Topic
 }
 
@@ -69,6 +73,10 @@ model Problem {
   answer           String
   explanation      String
   difficulty       Difficulty?
+  courseId         Int?
+  subjectId        Int?
+  topicId          Int?
+  subtopicId       Int?
   suggestedPoints  Int?
   suggestedTime    Int?
   media            Json
@@ -81,6 +89,10 @@ model Problem {
   
   problemType      ProblemType      @relation(fields: [typeCode], references: [code])
   owner            UserInfo         @relation("ProblemOwner", fields: [ownerId], references: [uid])
+  course           Course?          @relation(fields: [courseId], references: [id])
+  subject          Subject?         @relation(fields: [subjectId], references: [id])
+  topic            Topic?           @relation(fields: [topicId], references: [id])
+  subtopic         Subtopic?        @relation(fields: [subtopicId], references: [id])
   options          ProblemOptions[]
 }
 
