@@ -162,7 +162,15 @@ export default function SetupQuestionsPage() {
 
   return (
     <div className="w-full px-6 py-8">
-      <h1 className="text-3xl font-bold text-white mb-8">Setup Questions</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
+        <a
+          href="/curriculum"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+        >
+          Update Curriculum
+        </a>
+      </div>
 
       {/* Curriculum Selection */}
       <div className="mb-8 p-6 bg-gray-800 rounded-lg">

@@ -28,6 +28,15 @@ export async function POST(request: NextRequest) {
 }
 
 async function upsertCurriculumLevel(nodes: TreeNode[], ownerId: string) {
+  // Ensure the user exists before proceeding
+  const userExists = await prisma.userInfo.findUnique({
+    where: { uid: ownerId }
+  });
+  
+  if (!userExists) {
+    throw new Error('User not found');
+  }
+
   for (const courseNode of nodes) {
     if (courseNode.level !== 0) continue;
 

@@ -35,6 +35,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           if (response.ok) {
             const result = await response.json();
             setUserDetails(result.data);
+          } else {
+            // If user doesn't exist in database, set empty details to trigger redirect
+            setUserDetails(null);
           }
         } catch (error) {
           console.error("Error fetching user details:", error);
@@ -75,7 +78,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
 
     // If user is logged in but hasn't filled details or accepted terms, redirect to UserDetailsForm
-    if (!userDetails?.termsAccepted) {
+    if (!userDetails || !userDetails.termsAccepted) {
       router.push("/user/details");
       return;
     }
