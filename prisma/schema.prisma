@@ -55,8 +55,7 @@ model Subtopic {
 }
 
 model ProblemType {
-  id          Int       @id @default(autoincrement())
-  code        String    @unique
+  code        String    @id
   title       String
   description String?
   offlineOnly Boolean
