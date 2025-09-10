@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
 
 export default function SetupNav() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const navItems = [
     {
@@ -20,19 +21,16 @@ export default function SetupNav() {
   ];
 
   return (
-    <div className="flex space-x-2 mx-12">
+    <div className="flex space-x-2">
       {navItems.map((item) => (
-        <Link
+        <Button
           key={item.href}
-          href={item.href}
-          className={`px-4 py-2 rounded font-medium transition-colors ${
-            item.isActive
-              ? "bg-blue-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white"
-          }`}
+          onClick={() => router.push(item.href)}
+          variant={item.isActive ? "primary" : "secondary"}
+          size="sm"
         >
           {item.label}
-        </Link>
+        </Button>
       ))}
     </div>
   );
