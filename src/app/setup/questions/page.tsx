@@ -7,6 +7,7 @@ import { Toast } from "@/components/ui/Toast";
 import Feedback from "@/components/ui/Feedback";
 import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
 import SetupNav from "@/components/setup/SetupNav";
+import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
 import { ProblemDifficulty } from "@/types/Problem";
 import { ProblemType } from "@/types/Problem.type";
 
@@ -72,33 +73,11 @@ export default function SetupQuestionsPage() {
     loadData();
   }, [user]);
 
-  const handleCourseChange = (courseId: string) => {
-    const course = curriculum.find((c) => c.id === courseId) || null;
-    setSelectedCourse(course);
-    setSelectedSubject(null);
-    setSelectedTopic(null);
-    setSelectedSubtopic(null);
-  };
-
-  const handleSubjectChange = (subjectId: string) => {
-    const subject =
-      selectedCourse?.children?.find((s) => s.id === subjectId) || null;
-    setSelectedSubject(subject);
-    setSelectedTopic(null);
-    setSelectedSubtopic(null);
-  };
-
-  const handleTopicChange = (topicId: string) => {
-    const topic =
-      selectedSubject?.children?.find((t) => t.id === topicId) || null;
-    setSelectedTopic(topic);
-    setSelectedSubtopic(null);
-  };
-
-  const handleSubtopicChange = (subtopicId: string) => {
-    const subtopic =
-      selectedTopic?.children?.find((st) => st.id === subtopicId) || null;
-    setSelectedSubtopic(subtopic);
+  const handlePathChange = (path: TreeNode[]) => {
+    setSelectedCourse(path[0] || null);
+    setSelectedSubject(path[1] || null);
+    setSelectedTopic(path[2] || null);
+    setSelectedSubtopic(path[3] || null);
   };
 
   const selectedPath = [
@@ -219,67 +198,16 @@ export default function SetupQuestionsPage() {
       <CurriculumBreadcrumb selectedPath={selectedPath} />
 
       {/* Curriculum Selection */}
-      <div className="mb-8 mt-4 p-6 bg-gray-800 rounded-lg">
-        <h2 className="text-xl font-semibold text-white mb-4">
-          Select Curriculum Path
+      <div className="my-4 px-6 py-3 bg-gray-800 rounded-lg">
+        <h2 className="text-xl font-semibold text-white mb-2 text-center">
+          Select Curriculum for question
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <select
-            value={selectedCourse?.id || ""}
-            onChange={(e) => handleCourseChange(e.target.value)}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600"
-          >
-            <option value="">Select Course</option>
-            {curriculum.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedSubject?.id || ""}
-            onChange={(e) => handleSubjectChange(e.target.value)}
-            disabled={!selectedCourse}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Subject</option>
-            {selectedCourse?.children?.map((subject) => (
-              <option key={subject.id} value={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedTopic?.id || ""}
-            onChange={(e) => handleTopicChange(e.target.value)}
-            disabled={!selectedSubject}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Topic</option>
-            {selectedSubject?.children?.map((topic) => (
-              <option key={topic.id} value={topic.id}>
-                {topic.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedSubtopic?.id || ""}
-            onChange={(e) => handleSubtopicChange(e.target.value)}
-            disabled={!selectedTopic}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Subtopic</option>
-            {selectedTopic?.children?.map((subtopic) => (
-              <option key={subtopic.id} value={subtopic.id}>
-                {subtopic.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <CompactMillerColumns
+          data={curriculum}
+          selectedPath={selectedPath}
+          onSelectionChange={handlePathChange}
+        />
       </div>
 
       {/* Question Form */}
