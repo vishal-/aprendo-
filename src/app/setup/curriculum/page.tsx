@@ -110,20 +110,20 @@ export default function CurriculumPage() {
 
   return (
     <div className="w-full px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Curriculum Management
-        </h1>
-        <p className="text-gray-300">
-          Navigate through the curriculum hierarchy. Add items using the input
-          fields at the bottom of each column.
-        </p>
-      </div>
-
-      <div className="flex items-start space-x-4 mb-6">
-        <CurriculumBreadcrumb selectedPath={selectedPath} />
+      <div className="flex justify-between items-start space-x-4 mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Curriculum Management
+          </h1>
+          <p className="text-gray-300">
+            Navigate through the curriculum hierarchy. Add items using the input
+            fields at the bottom of each column.
+          </p>
+        </div>
         <SetupNav />
       </div>
+
+      <CurriculumBreadcrumb selectedPath={selectedPath} />
 
       {/* Miller Columns */}
       <div className="mb-8">

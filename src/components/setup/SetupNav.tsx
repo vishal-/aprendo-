@@ -20,7 +20,7 @@ export default function SetupNav() {
   ];
 
   return (
-    <div className="flex space-x-2 mx-24">
+    <div className="flex space-x-2 mx-12">
       {navItems.map((item) => (
         <Link
           key={item.href}
