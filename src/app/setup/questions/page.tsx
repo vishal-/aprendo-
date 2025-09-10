@@ -6,13 +6,7 @@ import { TreeNode } from "@/types/Curriculum";
 import { Toast } from "@/components/ui/Toast";
 import Feedback from "@/components/ui/Feedback";
 import { ProblemDifficulty } from "@/types/Problem";
-
-interface ProblemType {
-  code: string;
-  title: string;
-  description?: string;
-  offlineOnly: boolean;
-}
+import { ProblemType } from "@/types/Problem.type";
 
 export default function SetupQuestionsPage() {
   const { user } = useAuthStore();
@@ -35,7 +29,7 @@ export default function SetupQuestionsPage() {
     statement: "",
     answer: "",
     explanation: "",
-    difficulty: "medium" as "easy" | "medium" | "hard",
+    difficulty: ProblemDifficulty.MEDIUM,
     suggestedPoints: 1,
     suggestedTime: 5,
     isPublic: false,
@@ -184,7 +178,7 @@ export default function SetupQuestionsPage() {
           statement: "",
           answer: "",
           explanation: "",
-          difficulty: "medium",
+          difficulty: ProblemDifficulty.MEDIUM,
           suggestedPoints: 1,
           suggestedTime: 5,
           isPublic: false,
@@ -217,7 +211,7 @@ export default function SetupQuestionsPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
         <a
-          href="/curriculum"
+          href="/setup/curriculum"
           className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
         >
           Update Curriculum
@@ -484,22 +478,23 @@ export default function SetupQuestionsPage() {
                 </div>
               </>
             ) : (
-              <div>
+              <div className="question-json-input">
                 <label className="block text-white mb-2">Question JSON</label>
                 <textarea
                   value={jsonInput}
                   onChange={(e) => setJsonInput(e.target.value)}
-                  placeholder={`{
-  "typeCode": "mcq_single",
-  "statement": "What is 2+2?",
-  "answer": "4",
-  "explanation": "Basic addition",
-  "difficulty": "easy",
-  "suggestedPoints": 1,
-  "suggestedTime": 2,
-  "isPublic": false,
-  "isActive": true
-}`}
+                  placeholder={`
+                  {
+                    "typeCode": "mcq_single",
+                    "statement": "What is 2+2?",
+                    "answer": "4",
+                    "explanation": "Basic addition",
+                    "difficulty": "easy",
+                    "suggestedPoints": 1,
+                    "suggestedTime": 2,
+                    "isPublic": false,
+                    "isActive": true
+                  }`}
                   rows={12}
                   className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 font-mono text-sm"
                 />
