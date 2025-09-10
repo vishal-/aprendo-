@@ -117,15 +117,39 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch curriculum hierarchy for the user
+    // Fetch curriculum hierarchy for the user or base data
     const courses = await prisma.course.findMany({
-      where: { ownerId: uid },
+      where: {
+        OR: [
+          { ownerId: uid },
+          { isBase: true }
+        ]
+      },
       include: {
         subjects: {
+          where: {
+            OR: [
+              { ownerId: uid },
+              { isBase: true }
+            ]
+          },
           include: {
             topics: {
+              where: {
+                OR: [
+                  { ownerId: uid },
+                  { isBase: true }
+                ]
+              },
               include: {
-                subtopics: true
+                subtopics: {
+                  where: {
+                    OR: [
+                      { ownerId: uid },
+                      { isBase: true }
+                    ]
+                  }
+                }
               }
             }
           }
