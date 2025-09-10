@@ -7,6 +7,8 @@ import { Toast } from "@/components/ui/Toast";
 import Button from "@/components/ui/Button";
 import { TreeNode } from "@/types/Curriculum";
 import { apiService } from "@/lib/api";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
+import SetupNav from "@/components/setup/SetupNav";
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
@@ -21,7 +23,9 @@ export default function CurriculumPage() {
       if (!user) return;
 
       try {
-        const result = await apiService.getCurriculum(user) as { data: TreeNode[] };
+        const result = (await apiService.getCurriculum(user)) as {
+          data: TreeNode[];
+        };
         setData(result.data || []);
       } catch (error) {
         console.error("Error loading curriculum:", error);
@@ -121,24 +125,10 @@ export default function CurriculumPage() {
         </Button>
       </div>
 
-      {/* Selected Path Breadcrumb */}
-      {selectedPath.length > 0 && (
-        <div className="mb-6 p-4 bg-gray-800 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-300 mb-2">
-            Selected Path:
-          </h3>
-          <div className="flex items-center space-x-2 text-white">
-            {selectedPath.map((node, index) => (
-              <div key={node.id} className="flex items-center">
-                <span className="text-sm">{node.name}</span>
-                {index < selectedPath.length - 1 && (
-                  <span className="mx-2 text-gray-400">→</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="flex items-start space-x-4 mb-6">
+        <CurriculumBreadcrumb selectedPath={selectedPath} />
+        <SetupNav />
+      </div>
 
       {/* Miller Columns */}
       <div className="mb-8">

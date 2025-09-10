@@ -5,6 +5,8 @@ import { useAuthStore } from "@/store/auth";
 import { TreeNode } from "@/types/Curriculum";
 import { Toast } from "@/components/ui/Toast";
 import Feedback from "@/components/ui/Feedback";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
+import SetupNav from "@/components/setup/SetupNav";
 import { ProblemDifficulty } from "@/types/Problem";
 import { ProblemType } from "@/types/Problem.type";
 
@@ -281,21 +283,10 @@ export default function SetupQuestionsPage() {
           </select>
         </div>
 
-        {/* Breadcrumb */}
-        {selectedPath.length > 0 && (
-          <div className="p-4 bg-gray-700 rounded">
-            <div className="flex items-center space-x-2 text-white">
-              {selectedPath.map((node, index) => (
-                <div key={node.id} className="flex items-center">
-                  <span className="text-sm">{node.name}</span>
-                  {index < selectedPath.length - 1 && (
-                    <span className="mx-2 text-gray-400">→</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="flex items-start space-x-4 mb-4">
+          <CurriculumBreadcrumb selectedPath={selectedPath} />
+          <SetupNav />
+        </div>
       </div>
 
       {/* Question Form */}
