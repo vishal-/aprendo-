@@ -6,6 +6,7 @@ import MillerColumns from "@/components/ui/MillerColumns";
 import { Toast } from "@/components/ui/Toast";
 import Button from "@/components/ui/Button";
 import { TreeNode } from "@/types/Curriculum";
+import { apiService } from "@/lib/api";
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
@@ -20,17 +21,8 @@ export default function CurriculumPage() {
       if (!user) return;
 
       try {
-        const token = await user.getIdToken();
-        const response = await fetch("/api/curriculum", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          setData(result.data || []);
-        }
+        const result = await apiService.getCurriculum(user) as { data: TreeNode[] };
+        setData(result.data || []);
       } catch (error) {
         console.error("Error loading curriculum:", error);
       } finally {
@@ -91,21 +83,8 @@ export default function CurriculumPage() {
 
     setIsSaving(true);
     try {
-      const token = await user.getIdToken();
-      const response = await fetch("/api/curriculum", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ curriculum: data })
-      });
-
-      if (response.ok) {
-        Toast.success("Curriculum saved successfully!");
-      } else {
-        Toast.danger("Failed to save curriculum. Please try again.");
-      }
+      await apiService.saveCurriculum(user, data);
+      Toast.success("Curriculum saved successfully!");
     } catch (error) {
       console.error("Error saving curriculum:", error);
       Toast.danger("An error occurred while saving. Please try again.");
