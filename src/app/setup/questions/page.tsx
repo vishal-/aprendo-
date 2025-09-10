@@ -195,10 +195,8 @@ export default function SetupQuestionsPage() {
         <SetupNav />
       </div>
 
-      <CurriculumBreadcrumb selectedPath={selectedPath} />
-
       {/* Curriculum Selection */}
-      <div className="my-4 px-6 py-3 bg-gray-800 rounded-lg">
+      <div className="my-4 p-5 bg-gray-800 rounded-lg">
         <h2 className="text-xl font-semibold text-white mb-2 text-center">
           Select Curriculum for question
         </h2>
@@ -208,6 +206,8 @@ export default function SetupQuestionsPage() {
           selectedPath={selectedPath}
           onSelectionChange={handlePathChange}
         />
+
+        <CurriculumBreadcrumb selectedPath={selectedPath} />
       </div>
 
       {/* Question Form */}
