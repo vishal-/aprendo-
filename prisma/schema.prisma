@@ -55,11 +55,52 @@ model Subtopic {
 }
 
 model ProblemType {
-  id          Int    @id @default(autoincrement())
-  code        String @unique
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
   title       String
   description String?
   offlineOnly Boolean
+  problems    Problem[]
+}
+
+model Problem {
+  id               Int              @id @default(autoincrement())
+  typeCode         String
+  statement        String
+  answer           String
+  explanation      String
+  difficulty       Difficulty?
+  suggestedPoints  Int?
+  suggestedTime    Int?
+  media            Json
+  metadata         Json?
+  ownerId          String
+  isPublic         Boolean
+  isActive         Boolean
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  
+  problemType      ProblemType      @relation(fields: [typeCode], references: [code])
+  owner            UserInfo         @relation("ProblemOwner", fields: [ownerId], references: [uid])
+  options          ProblemOptions[]
+}
+
+model ProblemOptions {
+  id        Int      @id @default(autoincrement())
+  problemId Int
+  content   String
+  isCorrect Boolean
+  media     Json?
+  metadata  Json?
+  updatedAt DateTime @updatedAt
+  
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
 }
 
 model UserInfo {
@@ -78,6 +119,7 @@ model UserInfo {
   subjects         Subject[]       @relation("SubjectOwner")
   topics           Topic[]         @relation("TopicOwner")
   subtopics        Subtopic[]      @relation("SubtopicOwner")
+  problems         Problem[]       @relation("ProblemOwner")
 }
 
 enum UserRole {
