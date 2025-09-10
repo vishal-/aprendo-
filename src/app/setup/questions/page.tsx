@@ -213,14 +213,13 @@ export default function SetupQuestionsPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
 
-        <div className="flex items-start space-x-4 mb-4">
-          <CurriculumBreadcrumb selectedPath={selectedPath} />
-          <SetupNav />
-        </div>
+        <SetupNav />
       </div>
 
+      <CurriculumBreadcrumb selectedPath={selectedPath} />
+
       {/* Curriculum Selection */}
-      <div className="mb-8 p-6 bg-gray-800 rounded-lg">
+      <div className="mb-8 mt-4 p-6 bg-gray-800 rounded-lg">
         <h2 className="text-xl font-semibold text-white mb-4">
           Select Curriculum Path
         </h2>
