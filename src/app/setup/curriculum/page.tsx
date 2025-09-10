@@ -13,6 +13,7 @@ import SetupNav from "@/components/setup/SetupNav";
 export default function CurriculumPage() {
   const { user } = useAuthStore();
   const [data, setData] = useState<TreeNode[]>([]);
+  const [originalData, setOriginalData] = useState<TreeNode[]>([]);
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +27,9 @@ export default function CurriculumPage() {
         const result = (await apiService.getCurriculum(user)) as {
           data: TreeNode[];
         };
-        setData(result.data || []);
+        const curriculumData = result.data || [];
+        setData(curriculumData);
+        setOriginalData(curriculumData);
       } catch (error) {
         console.error("Error loading curriculum:", error);
       } finally {
@@ -82,12 +85,15 @@ export default function CurriculumPage() {
     setData(updateData(data, parentPath, level));
   };
 
+  const isDirty = JSON.stringify(data) !== JSON.stringify(originalData);
+
   const handleSaveCurriculum = async () => {
     if (!user) return;
 
     setIsSaving(true);
     try {
       await apiService.saveCurriculum(user, data);
+      setOriginalData(data);
       Toast.success("Curriculum saved successfully!");
     } catch (error) {
       console.error("Error saving curriculum:", error);
@@ -97,32 +103,21 @@ export default function CurriculumPage() {
     }
   };
 
+  const handleResetChanges = () => {
+    setData(originalData);
+    setSelectedPath([]);
+  };
+
   return (
     <div className="w-full px-6 py-8">
-      <div className="mb-8 flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Curriculum Management
-          </h1>
-          <p className="text-gray-300">
-            Navigate through the curriculum hierarchy. Add items using the input
-            fields at the bottom of each column.
-          </p>
-        </div>
-        <Button
-          onClick={handleSaveCurriculum}
-          disabled={isSaving}
-          variant="info"
-        >
-          {isSaving ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Saving...
-            </>
-          ) : (
-            <>Save Curriculum</>
-          )}
-        </Button>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-4">
+          Curriculum Management
+        </h1>
+        <p className="text-gray-300">
+          Navigate through the curriculum hierarchy. Add items using the input
+          fields at the bottom of each column.
+        </p>
       </div>
 
       <div className="flex items-start space-x-4 mb-6">
@@ -146,6 +141,31 @@ export default function CurriculumPage() {
             onAddNode={handleAddNode}
           />
         )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-4">
+        <Button
+          onClick={handleResetChanges}
+          disabled={!isDirty || isSaving}
+          variant="danger"
+        >
+          Reset Changes
+        </Button>
+        <Button
+          onClick={handleSaveCurriculum}
+          disabled={!isDirty || isSaving}
+          variant="info"
+        >
+          {isSaving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Saving...
+            </>
+          ) : (
+            <>Save Curriculum</>
+          )}
+        </Button>
       </div>
     </div>
   );

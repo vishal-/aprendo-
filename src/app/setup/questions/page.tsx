@@ -212,12 +212,11 @@ export default function SetupQuestionsPage() {
     <div className="w-full px-6 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
-        <a
-          href="/setup/curriculum"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          Update Curriculum
-        </a>
+
+        <div className="flex items-start space-x-4 mb-4">
+          <CurriculumBreadcrumb selectedPath={selectedPath} />
+          <SetupNav />
+        </div>
       </div>
 
       {/* Curriculum Selection */}
@@ -281,11 +280,6 @@ export default function SetupQuestionsPage() {
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex items-start space-x-4 mb-4">
-          <CurriculumBreadcrumb selectedPath={selectedPath} />
-          <SetupNav />
         </div>
       </div>
 
