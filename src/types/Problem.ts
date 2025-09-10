@@ -25,3 +25,9 @@ export interface ProblemOptions {
     metadata?: Record<string, unknown>; // additional info
     updatedAt?: Date;
 }
+
+export enum ProblemDifficulty {
+    EASY = 'easy',
+    MEDIUM = 'medium',
+    HARD = 'hard',
+}
