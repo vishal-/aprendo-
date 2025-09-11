@@ -73,10 +73,10 @@ model Problem {
   answer           String
   explanation      String
   difficulty       Difficulty?
-  courseId         Int?
-  subjectId        Int?
-  topicId          Int?
-  subtopicId       Int?
+  courseId         Int
+  subjectId        Int
+  topicId          Int
+  subtopicId       Int
   suggestedPoints  Int?
   suggestedTime    Int?
   media            Json
@@ -89,10 +89,10 @@ model Problem {
   
   problemType      ProblemType      @relation(fields: [typeCode], references: [code])
   owner            UserInfo         @relation("ProblemOwner", fields: [ownerId], references: [uid])
-  course           Course?          @relation(fields: [courseId], references: [id])
-  subject          Subject?         @relation(fields: [subjectId], references: [id])
-  topic            Topic?           @relation(fields: [topicId], references: [id])
-  subtopic         Subtopic?        @relation(fields: [subtopicId], references: [id])
+  course           Course           @relation(fields: [courseId], references: [id])
+  subject          Subject          @relation(fields: [subjectId], references: [id])
+  topic            Topic            @relation(fields: [topicId], references: [id])
+  subtopic         Subtopic         @relation(fields: [subtopicId], references: [id])
   options          ProblemOptions[]
 }
 

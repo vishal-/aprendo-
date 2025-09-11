@@ -25,6 +25,30 @@ export async function POST(request: NextRequest) {
       metadata
     } = body;
 
+    if (!subtopicId) {
+      return NextResponse.json({ error: 'Subtopic is required' }, { status: 400 });
+    }
+
+    // Get the subtopic with its full hierarchy
+    const subtopic = await prisma.subtopic.findUnique({
+      where: { id: subtopicId },
+      include: {
+        topic: {
+          include: {
+            subject: {
+              include: {
+                course: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!subtopic) {
+      return NextResponse.json({ error: 'Subtopic not found' }, { status: 404 });
+    }
+
     const problem = await prisma.problem.create({
       data: {
         typeCode,
@@ -36,6 +60,10 @@ export async function POST(request: NextRequest) {
         suggestedTime,
         isPublic,
         isActive,
+        courseId: subtopic.topic.subject.course.id,
+        subjectId: subtopic.topic.subject.id,
+        topicId: subtopic.topic.id,
+        subtopicId: subtopic.id,
         media: media || {},
         metadata: metadata || {},
         ownerId: uid
