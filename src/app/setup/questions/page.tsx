@@ -22,8 +22,6 @@ export default function SetupQuestionsPage() {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"form" | "json">("form");
-  const [jsonInput, setJsonInput] = useState("");
   const [validationError, setValidationError] = useState("");
 
   // Form state
@@ -106,40 +104,18 @@ export default function SetupQuestionsPage() {
 
     if (!user || !selectedSubtopic) return;
 
-    let questionData;
-
-    if (activeTab === "form") {
-      const error = validateFormData(formData);
-      if (error) {
-        setValidationError(error);
-        return;
-      }
-      questionData = {
-        ...formData,
-        subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
-        media: {},
-        metadata: {}
-      };
-    } else {
-      try {
-        const parsed = JSON.parse(jsonInput);
-        const error = validateFormData(parsed);
-        if (error) {
-          setValidationError(error);
-          return;
-        }
-        questionData = {
-          ...parsed,
-          subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
-          media: parsed.media || {},
-          metadata: parsed.metadata || {}
-        };
-      } catch (error) {
-        console.error("Invalid JSON:", error);
-        setValidationError("Invalid JSON format");
-        return;
-      }
+    const error = validateFormData(formData);
+    if (error) {
+      setValidationError(error);
+      return;
     }
+
+    const questionData = {
+      ...formData,
+      subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
+      media: {},
+      metadata: {}
+    };
 
     try {
       const token = await user.getIdToken();
@@ -165,7 +141,6 @@ export default function SetupQuestionsPage() {
           isPublic: false,
           isActive: true
         });
-        setJsonInput("");
         setValidationError("");
       } else {
         Toast.danger("Failed to add question");
@@ -217,201 +192,151 @@ export default function SetupQuestionsPage() {
             Add New Question
           </h2>
 
-          {/* Tabs */}
-          <div className="flex mb-6 border-b border-gray-700">
-            <button
-              type="button"
-              onClick={() => setActiveTab("form")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "form"
-                  ? "text-blue-400 border-b-2 border-blue-400"
-                  : "text-gray-400 hover:text-white"
-              }`}
-            >
-              Form Input
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("json")}
-              className={`px-4 py-2 font-medium ml-4 ${
-                activeTab === "json"
-                  ? "text-blue-400 border-b-2 border-blue-400"
-                  : "text-gray-400 hover:text-white"
-              }`}
-            >
-              JSON Input
-            </button>
-          </div>
-
           {validationError && (
             <Feedback message={validationError} variant="danger" />
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {activeTab === "form" ? (
-              <>
+            <>
+              <div>
+                <label className="block text-white mb-2">Question Type</label>
+                <select
+                  value={formData.typeCode}
+                  onChange={(e) =>
+                    setFormData({ ...formData, typeCode: e.target.value })
+                  }
+                  required
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                >
+                  <option value="">Select Type</option>
+                  {problemTypes.map((type) => (
+                    <option key={type.code} value={type.code}>
+                      {type.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">
+                  Question Statement
+                </label>
+                <textarea
+                  value={formData.statement}
+                  onChange={(e) =>
+                    setFormData({ ...formData, statement: e.target.value })
+                  }
+                  required
+                  rows={4}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">Answer</label>
+                <textarea
+                  value={formData.answer}
+                  onChange={(e) =>
+                    setFormData({ ...formData, answer: e.target.value })
+                  }
+                  required
+                  rows={3}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">Explanation</label>
+                <textarea
+                  value={formData.explanation}
+                  onChange={(e) =>
+                    setFormData({ ...formData, explanation: e.target.value })
+                  }
+                  required
+                  rows={3}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-white mb-2">Question Type</label>
+                  <label className="block text-white mb-2">Difficulty</label>
                   <select
-                    value={formData.typeCode}
+                    value={formData.difficulty}
                     onChange={(e) =>
-                      setFormData({ ...formData, typeCode: e.target.value })
+                      setFormData({
+                        ...formData,
+                        difficulty: e.target.value as ProblemDifficulty
+                      })
                     }
-                    required
                     className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
                   >
-                    <option value="">Select Type</option>
-                    {problemTypes.map((type) => (
-                      <option key={type.code} value={type.code}>
-                        {type.title}
-                      </option>
-                    ))}
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                   </select>
                 </div>
 
                 <div>
+                  <label className="block text-white mb-2">Points</label>
+                  <input
+                    type="number"
+                    value={formData.suggestedPoints}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        suggestedPoints: parseInt(e.target.value)
+                      })
+                    }
+                    min="1"
+                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-white mb-2">
-                    Question Statement
+                    Time (minutes)
                   </label>
-                  <textarea
-                    value={formData.statement}
+                  <input
+                    type="number"
+                    value={formData.suggestedTime}
                     onChange={(e) =>
-                      setFormData({ ...formData, statement: e.target.value })
+                      setFormData({
+                        ...formData,
+                        suggestedTime: parseInt(e.target.value)
+                      })
                     }
-                    required
-                    rows={4}
+                    min="1"
                     className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-white mb-2">Answer</label>
-                  <textarea
-                    value={formData.answer}
-                    onChange={(e) =>
-                      setFormData({ ...formData, answer: e.target.value })
-                    }
-                    required
-                    rows={3}
-                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white mb-2">Explanation</label>
-                  <textarea
-                    value={formData.explanation}
-                    onChange={(e) =>
-                      setFormData({ ...formData, explanation: e.target.value })
-                    }
-                    required
-                    rows={3}
-                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-white mb-2">Difficulty</label>
-                    <select
-                      value={formData.difficulty}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          difficulty: e.target.value as ProblemDifficulty
-                        })
-                      }
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    >
-                      <option value="easy">Easy</option>
-                      <option value="medium">Medium</option>
-                      <option value="hard">Hard</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-white mb-2">Points</label>
-                    <input
-                      type="number"
-                      value={formData.suggestedPoints}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          suggestedPoints: parseInt(e.target.value)
-                        })
-                      }
-                      min="1"
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white mb-2">
-                      Time (minutes)
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.suggestedTime}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          suggestedTime: parseInt(e.target.value)
-                        })
-                      }
-                      min="1"
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center text-white">
-                    <input
-                      type="checkbox"
-                      checked={formData.isPublic}
-                      onChange={(e) =>
-                        setFormData({ ...formData, isPublic: e.target.checked })
-                      }
-                      className="mr-2"
-                    />
-                    Public
-                  </label>
-                  <label className="flex items-center text-white">
-                    <input
-                      type="checkbox"
-                      checked={formData.isActive}
-                      onChange={(e) =>
-                        setFormData({ ...formData, isActive: e.target.checked })
-                      }
-                      className="mr-2"
-                    />
-                    Active
-                  </label>
-                </div>
-              </>
-            ) : (
-              <div className="question-json-input">
-                <label className="block text-white mb-2">Question JSON</label>
-                <textarea
-                  value={jsonInput}
-                  onChange={(e) => setJsonInput(e.target.value)}
-                  placeholder={`
-                  {
-                    "typeCode": "mcq_single",
-                    "statement": "What is 2+2?",
-                    "answer": "4",
-                    "explanation": "Basic addition",
-                    "difficulty": "easy",
-                    "suggestedPoints": 1,
-                    "suggestedTime": 2,
-                    "isPublic": false,
-                    "isActive": true
-                  }`}
-                  rows={12}
-                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 font-mono text-sm"
-                />
               </div>
-            )}
+
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center text-white">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPublic}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isPublic: e.target.checked })
+                    }
+                    className="mr-2"
+                  />
+                  Public
+                </label>
+                <label className="flex items-center text-white">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isActive: e.target.checked })
+                    }
+                    className="mr-2"
+                  />
+                  Active
+                </label>
+              </div>
+            </>
 
             <button
               type="submit"
