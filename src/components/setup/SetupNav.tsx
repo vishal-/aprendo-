@@ -17,6 +17,11 @@ export default function SetupNav() {
       href: "/setup/questions",
       label: "Questions",
       isActive: pathname === "/setup/questions"
+    },
+    {
+      href: "/setup/assess",
+      label: "Assessments",
+      isActive: pathname === "/setup/assess"
     }
   ];
 
