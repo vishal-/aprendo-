@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { auth } from "@/lib/firebase";
 import { apiService } from "@/lib/api";
 import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
 import { TreeNode } from "@/types/Curriculum";
 
 interface Question {
@@ -41,7 +42,10 @@ const AdminQuestionsPage = () => {
   }
 ]`);
   const [curriculum, setCurriculum] = useState<TreeNode[]>([]);
-  const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<TreeNode | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<TreeNode | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<TreeNode | null>(null);
+  const [selectedSubtopic, setSelectedSubtopic] = useState<TreeNode | null>(null);
 
   useEffect(() => {
     if (userDetails && userDetails.role !== "admin") {
@@ -54,8 +58,8 @@ const AdminQuestionsPage = () => {
       try {
         const user = auth.currentUser;
         if (user) {
-          const data = await apiService.getCurriculum(user);
-          setCurriculum(data.curriculum);
+          const data = await apiService.getCurriculum(user) as unknown as { data: TreeNode[] };
+          setCurriculum(data.data || []);
         }
       } catch (error) {
         console.error("Error fetching curriculum:", error);
@@ -79,8 +83,17 @@ const AdminQuestionsPage = () => {
         return;
       }
 
-      const result = await apiService.createProblems(user, questions);
-      toast.success(`${result.count} questions uploaded successfully!`);
+      // Create problems one by one since we don't have a bulk create API
+      let successCount = 0;
+      for (const question of questions) {
+        try {
+          await apiService.createProblem(user, question);
+          successCount++;
+        } catch (error) {
+          console.error('Error creating problem:', error);
+        }
+      }
+      toast.success(`${successCount} questions uploaded successfully!`);
       setJsonInput("");
     } catch (error) {
       toast.error("Invalid JSON format. Please check the console for more details.");
@@ -88,21 +101,21 @@ const AdminQuestionsPage = () => {
     }
   };
 
-  const handleInsertSubtopicId = () => {
-    const subtopic = selectedPath[3];
-    if (subtopic) {
-      try {
-        const questions: Question[] = JSON.parse(jsonInput);
-        const updatedQuestions = questions.map((q) => ({
-          ...q,
-          subtopicId: subtopic.id,
-        }));
-        setJsonInput(JSON.stringify(updatedQuestions, null, 2));
-      } catch {
-        toast.error("Invalid JSON in textarea.");
-      }
-    }
+  const handlePathChange = (path: TreeNode[]) => {
+    setSelectedCourse(path[0] || null);
+    setSelectedSubject(path[1] || null);
+    setSelectedTopic(path[2] || null);
+    setSelectedSubtopic(path[3] || null);
   };
+
+  const selectedPath = [
+    selectedCourse,
+    selectedSubject,
+    selectedTopic,
+    selectedSubtopic
+  ].filter((node): node is TreeNode => node !== null);
+
+
 
 
   if (!userDetails) {
@@ -120,20 +133,16 @@ const AdminQuestionsPage = () => {
       <div className="">
         <p>Here you can manage the questions.</p>
 
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-2">Select Subtopic</h2>
+        <div className="mt-8 p-6 bg-gray-800 rounded-lg">
+          <h2 className="text-xl font-semibold text-white mb-4">Select Curriculum Path</h2>
           <CompactMillerColumns
             data={curriculum}
             selectedPath={selectedPath}
-            onSelectionChange={setSelectedPath}
+            onSelectionChange={handlePathChange}
           />
-          <Button
-            onClick={handleInsertSubtopicId}
-            disabled={selectedPath.length < 4}
-            className="mt-2"
-          >
-            Insert Subtopic ID
-          </Button>
+          <div className="mt-4">
+            <CurriculumBreadcrumb selectedPath={selectedPath} />
+          </div>
         </div>
 
         <form onSubmit={handleJsonUpload} className="mt-4">
