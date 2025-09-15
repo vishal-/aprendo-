@@ -17,12 +17,18 @@ export default function SetupNav() {
       id: "questions",
       label: "Questions",
       href: "/setup/questions"
+    },
+    {
+      id: "question-bank",
+      label: "Question Bank",
+      href: "/setup/question-bank"
     }
   ];
 
   const getActiveTab = () => {
     if (pathname === "/setup/curriculum") return "curriculum";
     if (pathname === "/setup/questions") return "questions";
+    if (pathname === "/setup/question-bank") return "question-bank";
     return "curriculum";
   };
 
