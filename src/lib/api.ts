@@ -16,6 +16,11 @@ interface ProblemData {
   metadata?: Record<string, unknown>;
 }
 
+interface CreateProblemsResponse {
+  success: boolean;
+  count: number;
+}
+
 class ApiService {
   private async getAuthHeaders(user: User): Promise<Record<string, string>> {
     const token = await user.getIdToken();
@@ -74,6 +79,13 @@ class ApiService {
     return this.request('/api/problems', {
       method: 'POST',
       body: JSON.stringify(problemData)
+    }, user);
+  }
+
+  async createProblems(user: User, problemsData: ProblemData[]): Promise<CreateProblemsResponse> {
+    return this.request('/api/problems', {
+      method: 'POST',
+      body: JSON.stringify(problemsData)
     }, user);
   }
 

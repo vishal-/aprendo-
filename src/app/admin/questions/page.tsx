@@ -6,11 +6,25 @@ import AdminNav from "@/components/admin/AdminNav";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import { auth } from "@/lib/firebase";
+import { apiService } from "@/lib/api";
 
 const AdminQuestionsPage = () => {
   const { userDetails } = useUserDetailsStore();
   const router = useRouter();
-  const [jsonInput, setJsonInput] = useState("");
+  const [jsonInput, setJsonInput] = useState(`[
+  {
+    "typeCode": "MCQ",
+    "statement": "What is the capital of France?",
+    "answer": "Paris",
+    "explanation": "Paris is the capital of France.",
+    "difficulty": "Easy",
+    "suggestedPoints": 10,
+    "suggestedTime": 60,
+    "isPublic": true,
+    "isActive": true,
+    "subtopicId": 1
+  }
+]`);
 
   useEffect(() => {
     if (userDetails && userDetails.role !== "admin") {
@@ -27,34 +41,21 @@ const AdminQuestionsPage = () => {
         return;
       }
 
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) {
+      const user = auth.currentUser;
+      if (!user) {
         toast.error("You are not authorized to perform this action.");
         return;
       }
 
-      const response = await fetch("/api/problems", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(questions),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        toast.success(`${result.count} questions uploaded successfully!`);
-        setJsonInput("");
-      } else {
-        const error = await response.json();
-        toast.error(`Error: ${error.error}`);
-      }
+      const result = await apiService.createProblems(user, questions);
+      toast.success(`${result.count} questions uploaded successfully!`);
+      setJsonInput("");
     } catch (error) {
       toast.error("Invalid JSON format. Please check the console for more details.");
       console.error(error);
     }
   };
+
 
   if (!userDetails) {
     return <div>Loading...</div>;
