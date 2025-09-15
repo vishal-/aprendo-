@@ -18,7 +18,6 @@ export interface Assessment {
     id?: number;
     mode: AssessmentMode;
     courseId: number;       // e.g., "Grade 5"
-    subject: number;     // e.g., "Mathematics"
     title: string;
     description?: string;
     instructions?: string;
