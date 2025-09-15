@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useAuthStore } from "@/store/auth";
 import { auth } from "@/lib/firebase";
 import Button from "../ui/Button";
+import { useAuthStore } from "@/store/auth";
+import { useUserDetailsStore } from "@/store/userDetailsStore";
 
 export default function Header() {
   const { user, loading } = useAuthStore();
+  const { userDetails } = useUserDetailsStore();
 
   return (
     <header className="border-b bg-gray-900 border-gray-600">
@@ -24,6 +26,14 @@ export default function Header() {
               <div>Loading...</div>
             ) : user ? (
               <>
+                {userDetails?.role === "admin" && (
+                  <Link
+                    href="/admin/dashboard"
+                    className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/user/dashboard"
                   className="bg-primary text-white px-3 py-2 md:px-4 md:py-2 rounded-lg hover:bg-secondary text-sm md:text-base"
