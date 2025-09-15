@@ -23,8 +23,8 @@ export default function CurriculumPage() {
       if (!user) return;
 
       try {
-        const result = await apiService.getCurriculum(user);
-        const curriculumData = result.curriculum || [];
+        const result = await apiService.getCurriculum(user) as unknown as { data: TreeNode[] };
+        const curriculumData = result.data || [];
         setData(curriculumData);
         setOriginalData(curriculumData);
       } catch (error) {
