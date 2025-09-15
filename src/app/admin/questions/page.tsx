@@ -1,8 +1,5 @@
 "use client";
-import { useUserDetailsStore } from "@/store/userDetailsStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import AdminNav from "@/components/admin/AdminNav";
+import { useState, useEffect } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import { auth } from "@/lib/firebase";
@@ -12,8 +9,6 @@ import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
 import { TreeNode } from "@/types/Curriculum";
 
 const AdminQuestionsPage = () => {
-  const { userDetails } = useUserDetailsStore();
-  const router = useRouter();
   const [jsonInput, setJsonInput] = useState(`[
   {
     "typeCode": "MCQ",
@@ -35,12 +30,6 @@ const AdminQuestionsPage = () => {
   const [selectedSubtopic, setSelectedSubtopic] = useState<TreeNode | null>(
     null
   );
-
-  useEffect(() => {
-    if (userDetails && userDetails.role !== "admin") {
-      router.push("/");
-    }
-  }, [userDetails, router]);
 
   useEffect(() => {
     const fetchCurriculum = async () => {
@@ -110,17 +99,8 @@ const AdminQuestionsPage = () => {
     selectedSubtopic
   ].filter((node): node is TreeNode => node !== null);
 
-  if (!userDetails) {
-    return <div>Loading...</div>;
-  }
-
-  if (userDetails.role !== "admin") {
-    return null;
-  }
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <AdminNav />
+    <>
       <h1 className="text-2xl font-bold mb-4">Admin Questions</h1>
       <div className="">
         <p>Here you can manage the questions.</p>
@@ -151,7 +131,7 @@ const AdminQuestionsPage = () => {
           </Button>
         </form>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -12,7 +12,7 @@ export default function Tabs({ tabs }: { tabs: Tab[] }) {
   const router = useRouter();
 
   return (
-    <div className="border-b border-gray-700 mb-6">
+    <div className="border-b border-gray-700">
       <nav className="-mb-px flex space-x-8" aria-label="Tabs">
         {tabs.map((tab) => (
           <button

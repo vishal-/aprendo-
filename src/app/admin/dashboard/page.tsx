@@ -2,7 +2,6 @@
 import { useUserDetailsStore } from "@/store/userDetailsStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import AdminNav from "@/components/admin/AdminNav";
 
 const AdminDashboardPage = () => {
   const { userDetails } = useUserDetailsStore();
@@ -23,8 +22,7 @@ const AdminDashboardPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <AdminNav />
+    <div className="">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <div className="">
         <p>Welcome to the admin dashboard, {userDetails.displayName}!</p>
