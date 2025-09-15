@@ -24,10 +24,8 @@ export default function CurriculumPage() {
       if (!user) return;
 
       try {
-        const result = (await apiService.getCurriculum(user)) as {
-          data: TreeNode[];
-        };
-        const curriculumData = result.data || [];
+        const result = await apiService.getCurriculum(user);
+        const curriculumData = result.curriculum || [];
         setData(curriculumData);
         setOriginalData(curriculumData);
       } catch (error) {

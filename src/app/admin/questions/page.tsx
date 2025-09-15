@@ -7,6 +7,21 @@ import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import { auth } from "@/lib/firebase";
 import { apiService } from "@/lib/api";
+import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
+import { TreeNode } from "@/types/Curriculum";
+
+interface Question {
+  typeCode: string;
+  statement: string;
+  answer: string;
+  explanation: string;
+  difficulty: string;
+  suggestedPoints: number;
+  suggestedTime: number;
+  isPublic: boolean;
+  isActive: boolean;
+  subtopicId: number;
+}
 
 const AdminQuestionsPage = () => {
   const { userDetails } = useUserDetailsStore();
@@ -25,12 +40,29 @@ const AdminQuestionsPage = () => {
     "subtopicId": 1
   }
 ]`);
+  const [curriculum, setCurriculum] = useState<TreeNode[]>([]);
+  const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
 
   useEffect(() => {
     if (userDetails && userDetails.role !== "admin") {
       router.push("/");
     }
   }, [userDetails, router]);
+
+  useEffect(() => {
+    const fetchCurriculum = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const data = await apiService.getCurriculum(user);
+          setCurriculum(data.curriculum);
+        }
+      } catch (error) {
+        console.error("Error fetching curriculum:", error);
+      }
+    };
+    fetchCurriculum();
+  }, []);
 
   const handleJsonUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +88,22 @@ const AdminQuestionsPage = () => {
     }
   };
 
+  const handleInsertSubtopicId = () => {
+    const subtopic = selectedPath[3];
+    if (subtopic) {
+      try {
+        const questions: Question[] = JSON.parse(jsonInput);
+        const updatedQuestions = questions.map((q) => ({
+          ...q,
+          subtopicId: subtopic.id,
+        }));
+        setJsonInput(JSON.stringify(updatedQuestions, null, 2));
+      } catch {
+        toast.error("Invalid JSON in textarea.");
+      }
+    }
+  };
+
 
   if (!userDetails) {
     return <div>Loading...</div>;
@@ -71,6 +119,23 @@ const AdminQuestionsPage = () => {
       <h1 className="text-2xl font-bold mb-4">Admin Questions</h1>
       <div className="">
         <p>Here you can manage the questions.</p>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-2">Select Subtopic</h2>
+          <CompactMillerColumns
+            data={curriculum}
+            selectedPath={selectedPath}
+            onSelectionChange={setSelectedPath}
+          />
+          <Button
+            onClick={handleInsertSubtopicId}
+            disabled={selectedPath.length < 4}
+            className="mt-2"
+          >
+            Insert Subtopic ID
+          </Button>
+        </div>
+
         <form onSubmit={handleJsonUpload} className="mt-4">
           <textarea
             className="w-full h-64 p-2 border rounded bg-gray-800 text-white"

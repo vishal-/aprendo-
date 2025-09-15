@@ -12,7 +12,7 @@ const mockTests = [
 ];
 
 export default function SetupAssessPage() {
-  const [tests, setTests] = useState(mockTests);
+  const [tests] = useState(mockTests);
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: "",

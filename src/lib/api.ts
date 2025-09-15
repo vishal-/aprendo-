@@ -21,6 +21,10 @@ interface CreateProblemsResponse {
   count: number;
 }
 
+interface GetCurriculumResponse {
+  curriculum: TreeNode[];
+}
+
 class ApiService {
   private async getAuthHeaders(user: User): Promise<Record<string, string>> {
     const token = await user.getIdToken();
@@ -58,7 +62,7 @@ class ApiService {
   }
 
   // Curriculum API
-  async getCurriculum(user: User) {
+  async getCurriculum(user: User): Promise<GetCurriculumResponse> {
     return this.request('/api/curriculum', { method: 'GET' }, user);
   }
 
