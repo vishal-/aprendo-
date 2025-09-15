@@ -1,42 +1,43 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import Button from "@/components/ui/Button";
+import Tabs from "@/components/ui/Tabs";
 
 export default function SetupNav() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const navItems = [
+  const tabs = [
     {
-      href: "/setup/curriculum",
+      id: "curriculum",
       label: "Curriculum",
-      isActive: pathname === "/setup/curriculum"
+      href: "/setup/curriculum"
     },
     {
-      href: "/setup/questions",
+      id: "questions",
       label: "Questions",
-      isActive: pathname === "/setup/questions"
-    },
-    {
-      href: "/setup/assess",
-      label: "Assessments",
-      isActive: pathname === "/setup/assess"
+      href: "/setup/questions"
     }
   ];
 
+  const getActiveTab = () => {
+    if (pathname === "/setup/curriculum") return "curriculum";
+    if (pathname === "/setup/questions") return "questions";
+    return "curriculum";
+  };
+
+  const handleTabChange = (tabId: string) => {
+    const tab = tabs.find(t => t.id === tabId);
+    if (tab?.href) {
+      router.push(tab.href);
+    }
+  };
+
   return (
-    <div className="flex space-x-2">
-      {navItems.map((item) => (
-        <Button
-          key={item.href}
-          onClick={() => router.push(item.href)}
-          variant={item.isActive ? "primary" : "secondary"}
-          size="sm"
-        >
-          {item.label}
-        </Button>
-      ))}
-    </div>
+    <Tabs
+      tabs={tabs}
+      activeTab={getActiveTab()}
+      onTabChange={handleTabChange}
+    />
   );
 }

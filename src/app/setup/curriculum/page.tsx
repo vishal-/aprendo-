@@ -8,7 +8,6 @@ import Button from "@/components/ui/Button";
 import { TreeNode } from "@/types/Curriculum";
 import { apiService } from "@/lib/api";
 import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
-import SetupNav from "@/components/setup/SetupNav";
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
@@ -107,18 +106,15 @@ export default function CurriculumPage() {
   };
 
   return (
-    <div className="w-full px-6 py-8">
-      <div className="flex justify-between items-start space-x-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Curriculum Management
-          </h1>
-          <p className="text-gray-300">
-            Navigate through the curriculum hierarchy. Add items using the input
-            fields at the bottom of each column.
-          </p>
-        </div>
-        <SetupNav />
+    <>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Curriculum Management
+        </h2>
+        <p className="text-gray-300">
+          Navigate through the curriculum hierarchy. Add items using the input
+          fields at the bottom of each column.
+        </p>
       </div>
 
       <CurriculumBreadcrumb selectedPath={selectedPath} />
@@ -165,6 +161,6 @@ export default function CurriculumPage() {
           )}
         </Button>
       </div>
-    </div>
+    </>
   );
 }

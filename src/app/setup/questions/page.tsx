@@ -6,7 +6,6 @@ import { TreeNode } from "@/types/Curriculum";
 import { Toast } from "@/components/ui/Toast";
 import Feedback from "@/components/ui/Feedback";
 import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
-import SetupNav from "@/components/setup/SetupNav";
 import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
 import { ProblemDifficulty } from "@/types/Problem";
 import { ProblemType } from "@/types/Problem.type";
@@ -163,11 +162,10 @@ export default function SetupQuestionsPage() {
   }
 
   return (
-    <div className="w-full px-6 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
-
-        <SetupNav />
+    <>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Questions</h2>
+        <p className="text-gray-300">Add and manage questions for your curriculum.</p>
       </div>
 
       {/* Curriculum Selection */}
@@ -347,6 +345,6 @@ export default function SetupQuestionsPage() {
           </form>
         </div>
       )}
-    </div>
+    </>
   );
 }

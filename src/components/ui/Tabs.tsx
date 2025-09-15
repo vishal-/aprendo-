@@ -1,34 +1,39 @@
-"use client";
+import { ReactNode } from "react";
 
-import { useRouter } from "next/navigation";
-
-export type Tab = {
-  href: string;
+interface Tab {
+  id: string;
   label: string;
-  isActive: boolean;
-};
+  href?: string;
+}
 
-export default function Tabs({ tabs }: { tabs: Tab[] }) {
-  const router = useRouter();
+interface TabsProps {
+  tabs: Tab[];
+  activeTab: string;
+  onTabChange?: (tabId: string) => void;
+  children?: ReactNode;
+}
 
+export default function Tabs({ tabs, activeTab, onTabChange, children }: TabsProps) {
   return (
-    <div className="border-b border-gray-700">
-      <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.label}
-            onClick={() => router.push(tab.href)}
-            className={`${
-              tab.isActive
-                ? "border-primary text-primary"
-                : "border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-500"
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-            aria-current={tab.isActive ? "page" : undefined}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
+    <div>
+      <div className="border-b border-gray-700">
+        <nav className="flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => onTabChange?.(tab.id)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === tab.id
+                  ? "border-blue-500 text-blue-400"
+                  : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+      {children && <div className="mt-4">{children}</div>}
     </div>
   );
 }
