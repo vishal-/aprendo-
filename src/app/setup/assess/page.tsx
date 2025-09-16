@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/auth";
 import { Toast } from "@/components/ui/Toast";
+import { TreeNode } from "@/types/Curriculum";
+import { Assessment, AssessmentMode, AssessmentStatus } from "@/types/Assessment";
+import { apiService } from "@/lib/api";
+import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
 
 // Mock data for tests
 const mockTests = [
@@ -29,37 +35,109 @@ const mockTests = [
 ];
 
 export default function SetupAssessPage() {
+  const { user } = useAuthStore();
   const [tests] = useState(mockTests);
+  const [curriculum, setCurriculum] = useState<TreeNode[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<TreeNode | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<TreeNode | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<TreeNode | null>(null);
+  const [selectedSubtopic, setSelectedSubtopic] = useState<TreeNode | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: ""
+  const [formData, setFormData] = useState<Partial<Assessment>>({
+    title: "",
+    description: "",
+    instructions: "",
+    duration: 60,
+    maximumMarks: 100,
+    mode: 'online' as AssessmentMode,
+    status: 'draft' as AssessmentStatus,
+    isPublic: false,
+    start: "",
+    end: ""
   });
 
+  useEffect(() => {
+    const loadCurriculum = async () => {
+      if (!user) return;
+
+      try {
+        const result = await apiService.getCurriculum(user) as unknown as { data: TreeNode[] };
+        setCurriculum(result.data || []);
+      } catch (error) {
+        console.error("Error loading curriculum:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCurriculum();
+  }, [user]);
+
+  const handlePathChange = (path: TreeNode[]) => {
+    setSelectedCourse(path[0] || null);
+    setSelectedSubject(path[1] || null);
+    setSelectedTopic(path[2] || null);
+    setSelectedSubtopic(path[3] || null);
+    
+    if (path[0]) {
+      setFormData(prev => ({
+        ...prev,
+        courseId: parseInt(path[0].id.replace('course_', ''))
+      }));
+    }
+  };
+
+  const selectedPath = [
+    selectedCourse,
+    selectedSubject,
+    selectedTopic,
+    selectedSubtopic
+  ].filter((node): node is TreeNode => node !== null);
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    setFormData((prev) => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : type === 'number' ? Number(value) : value 
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEditing) {
-      // Logic to update a test
-      Toast.success(`Test "${formData.name}" updated successfully!`);
-    } else {
-      // Logic to add a new test
-      Toast.success(`Test "${formData.name}" created successfully!`);
+    if (!selectedCourse) {
+      Toast.danger("Please select a course");
+      return;
     }
+    
+    if (isEditing) {
+      Toast.success(`Test "${formData.title}" updated successfully!`);
+    } else {
+      Toast.success(`Test "${formData.title}" created successfully!`);
+    }
+    
     // Reset form
-    setFormData({ name: "", description: "" });
+    setFormData({
+      title: "",
+      description: "",
+      instructions: "",
+      duration: 60,
+      maximumMarks: 100,
+      mode: 'online' as AssessmentMode,
+      status: 'draft' as AssessmentStatus,
+      isPublic: false,
+      start: "",
+      end: ""
+    });
     setIsEditing(null);
   };
 
   const handleEdit = (test: (typeof mockTests)[0]) => {
     setIsEditing(test.id);
-    setFormData({ name: test.name, description: test.description });
+    setFormData({ title: test.name, description: test.description });
   };
 
   const handleDelete = (testId: number) => {
@@ -74,26 +152,65 @@ export default function SetupAssessPage() {
         <p className="text-gray-300">Create and manage assessments for your curriculum.</p>
       </div>
 
+      {/* Curriculum Selection */}
+      <div className="mb-8 p-6 bg-gray-800 rounded-lg">
+        <h3 className="text-xl font-semibold text-white mb-4">Select Course</h3>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-32">
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <>
+            <CompactMillerColumns
+              data={curriculum}
+              selectedPath={selectedPath}
+              onSelectionChange={handlePathChange}
+            />
+            <div className="mt-4">
+              <CurriculumBreadcrumb selectedPath={selectedPath} />
+            </div>
+          </>
+        )}
+      </div>
+
       {/* Form to Add/Edit Test */}
       <div className="p-6 bg-gray-800 rounded-lg mb-8">
         <h2 className="text-xl font-semibold text-white mb-4">
           {isEditing ? "Edit Test" : "Create New Test"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-white mb-2">
-              Test Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="title" className="block text-white mb-2">
+                Test Title
+              </label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                value={formData.title || ""}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              />
+            </div>
+            <div>
+              <label htmlFor="mode" className="block text-white mb-2">
+                Mode
+              </label>
+              <select
+                id="mode"
+                name="mode"
+                value={formData.mode || "online"}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              >
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+              </select>
+            </div>
           </div>
+          
           <div>
             <label htmlFor="description" className="block text-white mb-2">
               Description
@@ -101,15 +218,123 @@ export default function SetupAssessPage() {
             <textarea
               id="description"
               name="description"
-              value={formData.description}
+              value={formData.description || ""}
               onChange={handleInputChange}
               rows={3}
               className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
             />
           </div>
+          
+          <div>
+            <label htmlFor="instructions" className="block text-white mb-2">
+              Instructions
+            </label>
+            <textarea
+              id="instructions"
+              name="instructions"
+              value={formData.instructions || ""}
+              onChange={handleInputChange}
+              rows={3}
+              className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="duration" className="block text-white mb-2">
+                Duration (minutes)
+              </label>
+              <input
+                id="duration"
+                name="duration"
+                type="number"
+                value={formData.duration || 60}
+                onChange={handleInputChange}
+                min="1"
+                required
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              />
+            </div>
+            <div>
+              <label htmlFor="maximumMarks" className="block text-white mb-2">
+                Maximum Marks
+              </label>
+              <input
+                id="maximumMarks"
+                name="maximumMarks"
+                type="number"
+                value={formData.maximumMarks || 100}
+                onChange={handleInputChange}
+                min="1"
+                required
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              />
+            </div>
+            <div>
+              <label htmlFor="status" className="block text-white mb-2">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status || "draft"}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="start" className="block text-white mb-2">
+                Start Date & Time
+              </label>
+              <input
+                id="start"
+                name="start"
+                type="datetime-local"
+                value={formData.start || ""}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              />
+            </div>
+            <div>
+              <label htmlFor="end" className="block text-white mb-2">
+                End Date & Time
+              </label>
+              <input
+                id="end"
+                name="end"
+                type="datetime-local"
+                value={formData.end || ""}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center">
+            <input
+              id="isPublic"
+              name="isPublic"
+              type="checkbox"
+              checked={formData.isPublic || false}
+              onChange={handleInputChange}
+              className="mr-2"
+            />
+            <label htmlFor="isPublic" className="text-white">
+              Make this test public
+            </label>
+          </div>
+          
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded"
+            disabled={!selectedCourse}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded"
           >
             {isEditing ? "Update Test" : "Create Test"}
           </button>

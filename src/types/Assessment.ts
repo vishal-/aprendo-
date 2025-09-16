@@ -3,32 +3,36 @@ export type AssessmentMode = 'online' | 'offline';
 export type AssessmentStatus = 'draft' | 'published' | 'disabled';
 
 export interface AssessmentQuestionRef {
-    id: number;
+    id?: number;
+    sectionId: number;
+    problemId: number;
     points: number;
-    time_limit_seconds?: number; // optional
+    timeLimitSeconds?: number;
 }
 
 export interface AssessmentSection {
+    id?: number;
+    assessmentId?: number;
     title: string;
     order: number;
-    questions: AssessmentQuestionRef[];
+    questions?: AssessmentQuestionRef[];
 }
 
 export interface Assessment {
     id?: number;
     mode: AssessmentMode;
-    courseId: number;       // e.g., "Grade 5"
+    courseId: number;
     title: string;
     description?: string;
     instructions?: string;
-    duration: number;
+    duration: number; // in minutes
     maximumMarks: number;
-    sections: AssessmentSection[];
-    ownerId: number;
+    ownerId?: string;
     isPublic: boolean;
     status: AssessmentStatus;
-    start: string;
-    end: string;
-    createdAt?: string;
-    updatedAt?: string;
+    start: Date | string;
+    end: Date | string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    sections?: AssessmentSection[];
 }
