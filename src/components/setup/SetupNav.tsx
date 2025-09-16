@@ -22,6 +22,11 @@ export default function SetupNav() {
       id: "question-bank",
       label: "Question Bank",
       href: "/setup/question-bank"
+    },
+    {
+      id: "tests",
+      label: "Tests",
+      href: "/setup/assess"
     }
   ];
 
@@ -29,6 +34,7 @@ export default function SetupNav() {
     if (pathname === "/setup/curriculum") return "curriculum";
     if (pathname === "/setup/questions") return "questions";
     if (pathname === "/setup/question-bank") return "question-bank";
+    if (pathname === "/setup/assess") return "tests";
     return "curriculum";
   };
 

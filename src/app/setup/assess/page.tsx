@@ -1,14 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import SetupNav from "@/components/setup/SetupNav";
 import { Toast } from "@/components/ui/Toast";
 
 // Mock data for tests
 const mockTests = [
-  { id: 1, name: "Algebra Basics", description: "A test on basic algebraic concepts.", numberOfQuestions: 20, duration: 30 },
-  { id: 2, name: "Geometry Fundamentals", description: "A test on fundamental geometric principles.", numberOfQuestions: 15, duration: 25 },
-  { id: 3, name: "Calculus I - Midterm", description: "Midterm exam for Calculus I.", numberOfQuestions: 25, duration: 60 },
+  {
+    id: 1,
+    name: "Algebra Basics",
+    description: "A test on basic algebraic concepts.",
+    numberOfQuestions: 20,
+    duration: 30
+  },
+  {
+    id: 2,
+    name: "Geometry Fundamentals",
+    description: "A test on fundamental geometric principles.",
+    numberOfQuestions: 15,
+    duration: 25
+  },
+  {
+    id: 3,
+    name: "Calculus I - Midterm",
+    description: "Midterm exam for Calculus I.",
+    numberOfQuestions: 25,
+    duration: 60
+  }
 ];
 
 export default function SetupAssessPage() {
@@ -16,12 +33,14 @@ export default function SetupAssessPage() {
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
+    description: ""
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,7 +57,7 @@ export default function SetupAssessPage() {
     setIsEditing(null);
   };
 
-  const handleEdit = (test: typeof mockTests[0]) => {
+  const handleEdit = (test: (typeof mockTests)[0]) => {
     setIsEditing(test.id);
     setFormData({ name: test.name, description: test.description });
   };
@@ -48,12 +67,11 @@ export default function SetupAssessPage() {
     Toast.danger(`Test with id ${testId} deleted.`);
   };
 
-
   return (
-    <div className="w-full px-6 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Setup Assessments</h1>
-        <SetupNav />
+    <>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Tests</h2>
+        <p className="text-gray-300">Create and manage assessments for your curriculum.</p>
       </div>
 
       {/* Form to Add/Edit Test */}
@@ -63,7 +81,9 @@ export default function SetupAssessPage() {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-white mb-2">Test Name</label>
+            <label htmlFor="name" className="block text-white mb-2">
+              Test Name
+            </label>
             <input
               id="name"
               name="name"
@@ -75,7 +95,9 @@ export default function SetupAssessPage() {
             />
           </div>
           <div>
-            <label htmlFor="description" className="block text-white mb-2">Description</label>
+            <label htmlFor="description" className="block text-white mb-2">
+              Description
+            </label>
             <textarea
               id="description"
               name="description"
@@ -96,10 +118,15 @@ export default function SetupAssessPage() {
 
       {/* List of Existing Tests */}
       <div className="p-6 bg-gray-800 rounded-lg">
-        <h2 className="text-xl font-semibold text-white mb-4">Existing Tests</h2>
+        <h2 className="text-xl font-semibold text-white mb-4">
+          Existing Tests
+        </h2>
         <div className="space-y-4">
-          {tests.map(test => (
-            <div key={test.id} className="p-4 bg-gray-700 rounded-lg flex justify-between items-center">
+          {tests.map((test) => (
+            <div
+              key={test.id}
+              className="p-4 bg-gray-700 rounded-lg flex justify-between items-center"
+            >
               <div>
                 <h3 className="font-bold text-white">{test.name}</h3>
                 <p className="text-gray-300 text-sm">{test.description}</p>
@@ -110,10 +137,16 @@ export default function SetupAssessPage() {
                 </div>
               </div>
               <div className="flex space-x-2">
-                <button onClick={() => handleEdit(test)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
+                <button
+                  onClick={() => handleEdit(test)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+                >
                   Edit
                 </button>
-                <button onClick={() => handleDelete(test.id)} className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                <button
+                  onClick={() => handleDelete(test.id)}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                >
                   Delete
                 </button>
               </div>
@@ -121,6 +154,6 @@ export default function SetupAssessPage() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
