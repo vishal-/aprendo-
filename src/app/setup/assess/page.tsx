@@ -297,7 +297,7 @@ export default function SetupAssessPage() {
                 id="start"
                 name="start"
                 type="datetime-local"
-                value={formData.start || ""}
+                value={formData.start instanceof Date ? formData.start.toISOString().slice(0, 16) : formData.start || ""}
                 onChange={handleInputChange}
                 className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
               />
@@ -310,7 +310,7 @@ export default function SetupAssessPage() {
                 id="end"
                 name="end"
                 type="datetime-local"
-                value={formData.end || ""}
+                value={formData.end instanceof Date ? formData.end.toISOString().slice(0, 16) : formData.end || ""}
                 onChange={handleInputChange}
                 className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
               />
