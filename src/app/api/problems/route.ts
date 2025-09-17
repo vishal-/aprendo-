@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { getUserFromToken } from '@/lib/auth';
 
@@ -20,7 +19,7 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit;
 
     // Build where clause based on provided curriculum level
-    const where: Prisma.ProblemWhereInput = {};
+    const where: Record<string, number> = {};
     if (subtopicId) {
       where.subtopicId = parseInt(subtopicId);
     } else if (topicId) {
