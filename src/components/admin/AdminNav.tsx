@@ -8,16 +8,18 @@ export default function AdminNav() {
 
   const navItems = [
     {
+      id: "dashboard",
       href: "/admin/dashboard",
-      label: "Dashboard",
-      isActive: pathname === "/admin/dashboard"
+      label: "Dashboard"
     },
     {
+      id: "questions",
       href: "/admin/questions",
-      label: "Questions",
-      isActive: pathname === "/admin/questions"
+      label: "Questions"
     }
   ];
 
-  return <Tabs tabs={navItems} />;
+  const activeTab = pathname === "/admin/dashboard" ? "dashboard" : "questions";
+
+  return <Tabs tabs={navItems} activeTab={activeTab} />;
 }
