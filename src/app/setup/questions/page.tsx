@@ -5,14 +5,10 @@ import { useAuthStore } from "@/store/auth";
 import { TreeNode } from "@/types/Curriculum";
 import { Toast } from "@/components/ui/Toast";
 import Feedback from "@/components/ui/Feedback";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
+import CompactMillerColumns from "@/components/setup/CompactMillerColumns";
 import { ProblemDifficulty } from "@/types/Problem";
-
-interface ProblemType {
-  code: string;
-  title: string;
-  description?: string;
-  offlineOnly: boolean;
-}
+import { ProblemType } from "@/types/Problem.type";
 
 export default function SetupQuestionsPage() {
   const { user } = useAuthStore();
@@ -25,8 +21,6 @@ export default function SetupQuestionsPage() {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"form" | "json">("form");
-  const [jsonInput, setJsonInput] = useState("");
   const [validationError, setValidationError] = useState("");
 
   // Form state
@@ -35,7 +29,7 @@ export default function SetupQuestionsPage() {
     statement: "",
     answer: "",
     explanation: "",
-    difficulty: "medium" as "easy" | "medium" | "hard",
+    difficulty: ProblemDifficulty.MEDIUM,
     suggestedPoints: 1,
     suggestedTime: 5,
     isPublic: false,
@@ -76,33 +70,11 @@ export default function SetupQuestionsPage() {
     loadData();
   }, [user]);
 
-  const handleCourseChange = (courseId: string) => {
-    const course = curriculum.find((c) => c.id === courseId) || null;
-    setSelectedCourse(course);
-    setSelectedSubject(null);
-    setSelectedTopic(null);
-    setSelectedSubtopic(null);
-  };
-
-  const handleSubjectChange = (subjectId: string) => {
-    const subject =
-      selectedCourse?.children?.find((s) => s.id === subjectId) || null;
-    setSelectedSubject(subject);
-    setSelectedTopic(null);
-    setSelectedSubtopic(null);
-  };
-
-  const handleTopicChange = (topicId: string) => {
-    const topic =
-      selectedSubject?.children?.find((t) => t.id === topicId) || null;
-    setSelectedTopic(topic);
-    setSelectedSubtopic(null);
-  };
-
-  const handleSubtopicChange = (subtopicId: string) => {
-    const subtopic =
-      selectedTopic?.children?.find((st) => st.id === subtopicId) || null;
-    setSelectedSubtopic(subtopic);
+  const handlePathChange = (path: TreeNode[]) => {
+    setSelectedCourse(path[0] || null);
+    setSelectedSubject(path[1] || null);
+    setSelectedTopic(path[2] || null);
+    setSelectedSubtopic(path[3] || null);
   };
 
   const selectedPath = [
@@ -131,40 +103,18 @@ export default function SetupQuestionsPage() {
 
     if (!user || !selectedSubtopic) return;
 
-    let questionData;
-
-    if (activeTab === "form") {
-      const error = validateFormData(formData);
-      if (error) {
-        setValidationError(error);
-        return;
-      }
-      questionData = {
-        ...formData,
-        subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
-        media: {},
-        metadata: {}
-      };
-    } else {
-      try {
-        const parsed = JSON.parse(jsonInput);
-        const error = validateFormData(parsed);
-        if (error) {
-          setValidationError(error);
-          return;
-        }
-        questionData = {
-          ...parsed,
-          subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
-          media: parsed.media || {},
-          metadata: parsed.metadata || {}
-        };
-      } catch (error) {
-        console.error("Invalid JSON:", error);
-        setValidationError("Invalid JSON format");
-        return;
-      }
+    const error = validateFormData(formData);
+    if (error) {
+      setValidationError(error);
+      return;
     }
+
+    const questionData = {
+      ...formData,
+      subtopicId: parseInt(selectedSubtopic.id.replace("subtopic_", "")),
+      media: {},
+      metadata: {}
+    };
 
     try {
       const token = await user.getIdToken();
@@ -184,13 +134,12 @@ export default function SetupQuestionsPage() {
           statement: "",
           answer: "",
           explanation: "",
-          difficulty: "medium",
+          difficulty: ProblemDifficulty.MEDIUM,
           suggestedPoints: 1,
           suggestedTime: 5,
           isPublic: false,
           isActive: true
         });
-        setJsonInput("");
         setValidationError("");
       } else {
         Toast.danger("Failed to add question");
@@ -213,95 +162,25 @@ export default function SetupQuestionsPage() {
   }
 
   return (
-    <div className="w-full px-6 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Setup Questions</h1>
-        <a
-          href="/curriculum"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-        >
-          Update Curriculum
-        </a>
+    <>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Questions</h2>
+        <p className="text-gray-300">Add and manage questions for your curriculum.</p>
       </div>
 
       {/* Curriculum Selection */}
-      <div className="mb-8 p-6 bg-gray-800 rounded-lg">
-        <h2 className="text-xl font-semibold text-white mb-4">
-          Select Curriculum Path
+      <div className="my-4 p-5 bg-gray-800 rounded-lg">
+        <h2 className="text-xl font-semibold text-white mb-2 text-center">
+          Select Curriculum for question
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <select
-            value={selectedCourse?.id || ""}
-            onChange={(e) => handleCourseChange(e.target.value)}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600"
-          >
-            <option value="">Select Course</option>
-            {curriculum.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.name}
-              </option>
-            ))}
-          </select>
+        <CompactMillerColumns
+          data={curriculum}
+          selectedPath={selectedPath}
+          onSelectionChange={handlePathChange}
+        />
 
-          <select
-            value={selectedSubject?.id || ""}
-            onChange={(e) => handleSubjectChange(e.target.value)}
-            disabled={!selectedCourse}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Subject</option>
-            {selectedCourse?.children?.map((subject) => (
-              <option key={subject.id} value={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedTopic?.id || ""}
-            onChange={(e) => handleTopicChange(e.target.value)}
-            disabled={!selectedSubject}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Topic</option>
-            {selectedSubject?.children?.map((topic) => (
-              <option key={topic.id} value={topic.id}>
-                {topic.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedSubtopic?.id || ""}
-            onChange={(e) => handleSubtopicChange(e.target.value)}
-            disabled={!selectedTopic}
-            className="p-3 bg-gray-700 text-white rounded border border-gray-600 disabled:opacity-50"
-          >
-            <option value="">Select Subtopic</option>
-            {selectedTopic?.children?.map((subtopic) => (
-              <option key={subtopic.id} value={subtopic.id}>
-                {subtopic.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Breadcrumb */}
-        {selectedPath.length > 0 && (
-          <div className="p-4 bg-gray-700 rounded">
-            <div className="flex items-center space-x-2 text-white">
-              {selectedPath.map((node, index) => (
-                <div key={node.id} className="flex items-center">
-                  <span className="text-sm">{node.name}</span>
-                  {index < selectedPath.length - 1 && (
-                    <span className="mx-2 text-gray-400">→</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <CurriculumBreadcrumb selectedPath={selectedPath} />
       </div>
 
       {/* Question Form */}
@@ -311,200 +190,151 @@ export default function SetupQuestionsPage() {
             Add New Question
           </h2>
 
-          {/* Tabs */}
-          <div className="flex mb-6 border-b border-gray-700">
-            <button
-              type="button"
-              onClick={() => setActiveTab("form")}
-              className={`px-4 py-2 font-medium ${
-                activeTab === "form"
-                  ? "text-blue-400 border-b-2 border-blue-400"
-                  : "text-gray-400 hover:text-white"
-              }`}
-            >
-              Form Input
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("json")}
-              className={`px-4 py-2 font-medium ml-4 ${
-                activeTab === "json"
-                  ? "text-blue-400 border-b-2 border-blue-400"
-                  : "text-gray-400 hover:text-white"
-              }`}
-            >
-              JSON Input
-            </button>
-          </div>
-
           {validationError && (
             <Feedback message={validationError} variant="danger" />
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {activeTab === "form" ? (
-              <>
+            <>
+              <div>
+                <label className="block text-white mb-2">Question Type</label>
+                <select
+                  value={formData.typeCode}
+                  onChange={(e) =>
+                    setFormData({ ...formData, typeCode: e.target.value })
+                  }
+                  required
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                >
+                  <option value="">Select Type</option>
+                  {problemTypes.map((type) => (
+                    <option key={type.code} value={type.code}>
+                      {type.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">
+                  Question Statement
+                </label>
+                <textarea
+                  value={formData.statement}
+                  onChange={(e) =>
+                    setFormData({ ...formData, statement: e.target.value })
+                  }
+                  required
+                  rows={4}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">Answer</label>
+                <textarea
+                  value={formData.answer}
+                  onChange={(e) =>
+                    setFormData({ ...formData, answer: e.target.value })
+                  }
+                  required
+                  rows={3}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white mb-2">Explanation</label>
+                <textarea
+                  value={formData.explanation}
+                  onChange={(e) =>
+                    setFormData({ ...formData, explanation: e.target.value })
+                  }
+                  required
+                  rows={3}
+                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-white mb-2">Question Type</label>
+                  <label className="block text-white mb-2">Difficulty</label>
                   <select
-                    value={formData.typeCode}
+                    value={formData.difficulty}
                     onChange={(e) =>
-                      setFormData({ ...formData, typeCode: e.target.value })
+                      setFormData({
+                        ...formData,
+                        difficulty: e.target.value as ProblemDifficulty
+                      })
                     }
-                    required
                     className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
                   >
-                    <option value="">Select Type</option>
-                    {problemTypes.map((type) => (
-                      <option key={type.code} value={type.code}>
-                        {type.title}
-                      </option>
-                    ))}
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                   </select>
                 </div>
 
                 <div>
+                  <label className="block text-white mb-2">Points</label>
+                  <input
+                    type="number"
+                    value={formData.suggestedPoints}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        suggestedPoints: parseInt(e.target.value)
+                      })
+                    }
+                    min="1"
+                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-white mb-2">
-                    Question Statement
+                    Time (minutes)
                   </label>
-                  <textarea
-                    value={formData.statement}
+                  <input
+                    type="number"
+                    value={formData.suggestedTime}
                     onChange={(e) =>
-                      setFormData({ ...formData, statement: e.target.value })
+                      setFormData({
+                        ...formData,
+                        suggestedTime: parseInt(e.target.value)
+                      })
                     }
-                    required
-                    rows={4}
+                    min="1"
                     className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-white mb-2">Answer</label>
-                  <textarea
-                    value={formData.answer}
-                    onChange={(e) =>
-                      setFormData({ ...formData, answer: e.target.value })
-                    }
-                    required
-                    rows={3}
-                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white mb-2">Explanation</label>
-                  <textarea
-                    value={formData.explanation}
-                    onChange={(e) =>
-                      setFormData({ ...formData, explanation: e.target.value })
-                    }
-                    required
-                    rows={3}
-                    className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-white mb-2">Difficulty</label>
-                    <select
-                      value={formData.difficulty}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          difficulty: e.target.value as ProblemDifficulty
-                        })
-                      }
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    >
-                      <option value="easy">Easy</option>
-                      <option value="medium">Medium</option>
-                      <option value="hard">Hard</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-white mb-2">Points</label>
-                    <input
-                      type="number"
-                      value={formData.suggestedPoints}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          suggestedPoints: parseInt(e.target.value)
-                        })
-                      }
-                      min="1"
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-white mb-2">
-                      Time (minutes)
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.suggestedTime}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          suggestedTime: parseInt(e.target.value)
-                        })
-                      }
-                      min="1"
-                      className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center text-white">
-                    <input
-                      type="checkbox"
-                      checked={formData.isPublic}
-                      onChange={(e) =>
-                        setFormData({ ...formData, isPublic: e.target.checked })
-                      }
-                      className="mr-2"
-                    />
-                    Public
-                  </label>
-                  <label className="flex items-center text-white">
-                    <input
-                      type="checkbox"
-                      checked={formData.isActive}
-                      onChange={(e) =>
-                        setFormData({ ...formData, isActive: e.target.checked })
-                      }
-                      className="mr-2"
-                    />
-                    Active
-                  </label>
-                </div>
-              </>
-            ) : (
-              <div>
-                <label className="block text-white mb-2">Question JSON</label>
-                <textarea
-                  value={jsonInput}
-                  onChange={(e) => setJsonInput(e.target.value)}
-                  placeholder={`{
-  "typeCode": "mcq_single",
-  "statement": "What is 2+2?",
-  "answer": "4",
-  "explanation": "Basic addition",
-  "difficulty": "easy",
-  "suggestedPoints": 1,
-  "suggestedTime": 2,
-  "isPublic": false,
-  "isActive": true
-}`}
-                  rows={12}
-                  className="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 font-mono text-sm"
-                />
               </div>
-            )}
+
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center text-white">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPublic}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isPublic: e.target.checked })
+                    }
+                    className="mr-2"
+                  />
+                  Public
+                </label>
+                <label className="flex items-center text-white">
+                  <input
+                    type="checkbox"
+                    checked={formData.isActive}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isActive: e.target.checked })
+                    }
+                    className="mr-2"
+                  />
+                  Active
+                </label>
+              </div>
+            </>
 
             <button
               type="submit"
@@ -515,6 +345,6 @@ export default function SetupQuestionsPage() {
           </form>
         </div>
       )}
-    </div>
+    </>
   );
 }

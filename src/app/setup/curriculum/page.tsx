@@ -6,10 +6,13 @@ import MillerColumns from "@/components/ui/MillerColumns";
 import { Toast } from "@/components/ui/Toast";
 import Button from "@/components/ui/Button";
 import { TreeNode } from "@/types/Curriculum";
+import { apiService } from "@/lib/api";
+import CurriculumBreadcrumb from "@/components/setup/CurriculumBreadcrumb";
 
 export default function CurriculumPage() {
   const { user } = useAuthStore();
   const [data, setData] = useState<TreeNode[]>([]);
+  const [originalData, setOriginalData] = useState<TreeNode[]>([]);
   const [selectedPath, setSelectedPath] = useState<TreeNode[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,17 +23,10 @@ export default function CurriculumPage() {
       if (!user) return;
 
       try {
-        const token = await user.getIdToken();
-        const response = await fetch("/api/curriculum", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          setData(result.data || []);
-        }
+        const result = await apiService.getCurriculum(user) as unknown as { data: TreeNode[] };
+        const curriculumData = result.data || [];
+        setData(curriculumData);
+        setOriginalData(curriculumData);
       } catch (error) {
         console.error("Error loading curriculum:", error);
       } finally {
@@ -86,26 +82,16 @@ export default function CurriculumPage() {
     setData(updateData(data, parentPath, level));
   };
 
+  const isDirty = JSON.stringify(data) !== JSON.stringify(originalData);
+
   const handleSaveCurriculum = async () => {
     if (!user) return;
 
     setIsSaving(true);
     try {
-      const token = await user.getIdToken();
-      const response = await fetch("/api/curriculum", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ curriculum: data })
-      });
-
-      if (response.ok) {
-        Toast.success("Curriculum saved successfully!");
-      } else {
-        Toast.danger("Failed to save curriculum. Please try again.");
-      }
+      await apiService.saveCurriculum(user, data);
+      setOriginalData(data);
+      Toast.success("Curriculum saved successfully!");
     } catch (error) {
       console.error("Error saving curriculum:", error);
       Toast.danger("An error occurred while saving. Please try again.");
@@ -114,52 +100,24 @@ export default function CurriculumPage() {
     }
   };
 
+  const handleResetChanges = () => {
+    setData(originalData);
+    setSelectedPath([]);
+  };
+
   return (
-    <div className="w-full px-6 py-8">
-      <div className="mb-8 flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Curriculum Management
-          </h1>
-          <p className="text-gray-300">
-            Navigate through the curriculum hierarchy. Add items using the input
-            fields at the bottom of each column.
-          </p>
-        </div>
-        <Button
-          onClick={handleSaveCurriculum}
-          disabled={isSaving}
-          variant="info"
-        >
-          {isSaving ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Saving...
-            </>
-          ) : (
-            <>Save Curriculum</>
-          )}
-        </Button>
+    <>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">
+          Curriculum Management
+        </h2>
+        <p className="text-gray-300">
+          Navigate through the curriculum hierarchy. Add items using the input
+          fields at the bottom of each column.
+        </p>
       </div>
 
-      {/* Selected Path Breadcrumb */}
-      {selectedPath.length > 0 && (
-        <div className="mb-6 p-4 bg-gray-800 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-300 mb-2">
-            Selected Path:
-          </h3>
-          <div className="flex items-center space-x-2 text-white">
-            {selectedPath.map((node, index) => (
-              <div key={node.id} className="flex items-center">
-                <span className="text-sm">{node.name}</span>
-                {index < selectedPath.length - 1 && (
-                  <span className="mx-2 text-gray-400">→</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <CurriculumBreadcrumb selectedPath={selectedPath} />
 
       {/* Miller Columns */}
       <div className="mb-8">
@@ -178,6 +136,31 @@ export default function CurriculumPage() {
           />
         )}
       </div>
-    </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-4">
+        <Button
+          onClick={handleResetChanges}
+          disabled={!isDirty || isSaving}
+          variant="danger"
+        >
+          Reset Changes
+        </Button>
+        <Button
+          onClick={handleSaveCurriculum}
+          disabled={!isDirty || isSaving}
+          variant="info"
+        >
+          {isSaving ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Saving...
+            </>
+          ) : (
+            <>Save Curriculum</>
+          )}
+        </Button>
+      </div>
+    </>
   );
 }

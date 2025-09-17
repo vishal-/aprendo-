@@ -11,12 +11,14 @@ datasource db {
 }
 
 model Course {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique // Unique constraint added for Course name
-  isBase    Boolean
-  ownerId   String
-  owner     UserInfo @relation("CourseOwner", fields: [ownerId], references: [uid])
-  subjects  Subject[]
+  id          Int           @id @default(autoincrement())
+  name        String        @unique // Unique constraint added for Course name
+  isBase      Boolean
+  ownerId     String
+  owner       UserInfo      @relation("CourseOwner", fields: [ownerId], references: [uid])
+  subjects    Subject[]
+  problems    Problem[]
+  assessments Assessment[]
 }
 
 model Subject {
@@ -28,6 +30,7 @@ model Subject {
   owner     UserInfo @relation("SubjectOwner", fields: [ownerId], references: [uid])
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   topics    Topic[]
+  problems  Problem[]
   @@unique([name, courseId]) // Ensures unique Subject names within a Course
 }
 
@@ -40,6 +43,7 @@ model Topic {
   owner     UserInfo @relation("TopicOwner", fields: [ownerId], references: [uid])
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subtopics Subtopic[]
+  problems  Problem[]
   @@unique([name, subjectId]) // Ensures unique Topic names within a Subject
 }
 
@@ -51,6 +55,7 @@ model Subtopic {
   topicId   Int
   owner     UserInfo @relation("SubtopicOwner", fields: [ownerId], references: [uid])
   topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  problems  Problem[]
   @@unique([name, topicId]) // Ensures unique Subtopic names within a Topic
 }
 
@@ -63,12 +68,16 @@ model ProblemType {
 }
 
 model Problem {
-  id               Int              @id @default(autoincrement())
+  id               Int                      @id @default(autoincrement())
   typeCode         String
   statement        String
   answer           String
   explanation      String
   difficulty       Difficulty?
+  courseId         Int
+  subjectId        Int
+  topicId          Int
+  subtopicId       Int
   suggestedPoints  Int?
   suggestedTime    Int?
   media            Json
@@ -76,12 +85,17 @@ model Problem {
   ownerId          String
   isPublic         Boolean
   isActive         Boolean
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
   
-  problemType      ProblemType      @relation(fields: [typeCode], references: [code])
-  owner            UserInfo         @relation("ProblemOwner", fields: [ownerId], references: [uid])
+  problemType      ProblemType              @relation(fields: [typeCode], references: [code])
+  owner            UserInfo                 @relation("ProblemOwner", fields: [ownerId], references: [uid])
+  course           Course                   @relation(fields: [courseId], references: [id])
+  subject          Subject                  @relation(fields: [subjectId], references: [id])
+  topic            Topic                    @relation(fields: [topicId], references: [id])
+  subtopic         Subtopic                 @relation(fields: [subtopicId], references: [id])
   options          ProblemOptions[]
+  assessmentRefs   AssessmentQuestionRef[]
 }
 
 model ProblemOptions {
@@ -119,6 +133,7 @@ model UserInfo {
   topics           Topic[]         @relation("TopicOwner")
   subtopics        Subtopic[]      @relation("SubtopicOwner")
   problems         Problem[]       @relation("ProblemOwner")
+  assessments      Assessment[]    @relation("AssessmentOwner")
 }
 
 enum UserRole {
@@ -128,4 +143,62 @@ enum UserRole {
   student
   moderator
   academy
+}
+
+enum AssessmentMode {
+  online
+  offline
+}
+
+enum AssessmentStatus {
+  draft
+  published
+  disabled
+}
+
+model Assessment {
+  id           Int                @id @default(autoincrement())
+  mode         AssessmentMode
+  courseId     Int
+  title        String
+  description  String?
+  instructions String?
+  duration     Int                // in minutes
+  maximumMarks Int
+  ownerId      String
+  isPublic     Boolean
+  status       AssessmentStatus
+  start        DateTime
+  end          DateTime
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  course       Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  owner        UserInfo           @relation("AssessmentOwner", fields: [ownerId], references: [uid])
+  sections     AssessmentSection[]
+}
+
+model AssessmentSection {
+  id           Int                      @id @default(autoincrement())
+  assessmentId Int
+  title        String
+  order        Int
+  questions    AssessmentQuestionRef[]
+
+  assessment   Assessment               @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, order]) // Ensures unique order within an assessment
+}
+
+model AssessmentQuestionRef {
+  id               Int                @id @default(autoincrement())
+  sectionId        Int
+  problemId        Int
+  points           Int
+  timeLimitSeconds Int?
+
+  section          AssessmentSection  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  problem          Problem            @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([sectionId, problemId]) // Ensures unique problem within a section
 }

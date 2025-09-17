@@ -19,7 +19,7 @@ export default function UserDashboard() {
     {
       title: "Curriculum",
       description: "View and manage curriculum content",
-      href: PATHS.curriculum,
+      href: "/setup/curriculum",
       icon: "📚"
     },
     {

@@ -65,6 +65,10 @@ CREATE TABLE "public"."Problem" (
     "answer" TEXT NOT NULL,
     "explanation" TEXT NOT NULL,
     "difficulty" "public"."Difficulty",
+    "courseId" INTEGER,
+    "subjectId" INTEGER,
+    "topicId" INTEGER,
+    "subtopicId" INTEGER,
     "suggestedPoints" INTEGER,
     "suggestedTime" INTEGER,
     "media" JSONB NOT NULL,
@@ -148,6 +152,18 @@ ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_typeCode_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "public"."UserInfo"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "public"."Course"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "public"."Subject"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "public"."Topic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."Problem" ADD CONSTRAINT "Problem_subtopicId_fkey" FOREIGN KEY ("subtopicId") REFERENCES "public"."Subtopic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."ProblemOptions" ADD CONSTRAINT "ProblemOptions_problemId_fkey" FOREIGN KEY ("problemId") REFERENCES "public"."Problem"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -4,7 +4,11 @@ export interface Problem {
     statement: string; // problem possibly in rich text or HTML
     answer: string; // solution answer, possibly rich text or HTML
     explanation: string; // solution explanation, possibly rich text or HTML
-    difficulty?: 'easy' | 'medium' | 'hard';
+    difficulty?: ProblemDifficulty;
+    courseId?: number; // associated course_id
+    subjectId?: number; // associated subject_id
+    topicId?: number; // associated topic_id
+    subtopicId?: number; // associated subtopic_id
     suggestedPoints?: number; // points assigned for correct answer
     suggestedTime?: number; // estimated time to solve in minutes
     media: Record<string, unknown>;

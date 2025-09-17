@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import admin from 'firebase-admin';
+import prisma from './prisma';
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -22,4 +23,14 @@ export async function getUidFromToken(request: NextRequest): Promise<string | nu
     console.error('Error verifying token:', error);
     return null;
   }
+}
+
+export async function getUserFromToken(request: NextRequest) {
+  const uid = await getUidFromToken(request);
+  if (!uid) {
+    return null;
+  }
+  return prisma.userInfo.findUnique({
+    where: { uid },
+  });
 }
